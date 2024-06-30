@@ -17,7 +17,7 @@ const SingleCard = ({ week }) => {
   const [statData, setStatData] = useState([]);
   const [bidValue, setBidValue] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = 'https://faablab.herokuapp.com/api/';
   const onChange = (value) => {
     setBidValue(value);
   };
