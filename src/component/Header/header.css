@@ -1,0 +1,28 @@
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0; /* Align to the right */
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    list-style: none;
+    margin: 0;
+    padding: 10px 0; /* Add space above items */
+    z-index: 1000;
+    display: none;
+    flex-direction: column; /* Ensure items stack vertically */
+}
+
+.dropdown-menu.show {
+    display: flex;
+}
+
+.dropdown-menu li {
+    padding: 10px;
+    cursor: pointer;
+    white-space: nowrap; /* Prevent wrapping of text */
+}
+
+.dropdown-menu li:hover {
+    background-color: #f0f0f0;
+}

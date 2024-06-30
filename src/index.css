@@ -1,0 +1,216 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+li{
+  list-style: none;
+}
+.faab-container{
+  max-width: 1170px;
+  width: 100%;
+  margin:0px auto;
+  font-family: 'poppins';
+}
+.navCard{
+  display: flex;
+  /* justify-content: space-between; */
+  width: 100%;
+}
+.navCardleft{
+  width: 50%;
+}
+.navCardleft img{
+  cursor: pointer;
+}
+.navCardright{
+  width: 50%;
+}
+.navCardright ul{
+  display: flex;
+  justify-content: end;
+  gap: 30px;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 400;
+}
+.navCardright ul li{
+  cursor: pointer;
+  color: #004E98;
+  position: relative; /* Added for positioning */
+}
+.navCardright ul li:hover{
+  color: #3A6EA5;
+}
+.navCardright ul li::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; /* Adjust as needed */
+  left: 0;
+  width: 0; /* Initial width */
+  height: 2px; /* Adjust thickness as needed */
+  background-color: #004E98; /* Adjust color as needed */
+  transition: width 0.3s ease; /* Smooth transition for width change */
+}
+.navCardright ul li:hover::after {
+  width: 100%; /* Extend the width to 100% on hover */
+}
+.singleCard{
+  max-width: 1140px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+}
+.mainCard img{
+  margin: 0px auto;
+  width: 280px;
+}
+.mainCard{
+  border: 2px solid #004E98;
+  border-radius: 6px;
+  cursor: pointer;
+  /* padding: 6px 0px; */
+}
+.playerTitle{
+  text-align: center;
+  padding: 18px 36px 0px 36px;
+  color: #004E98;
+  font-size: 16px;
+  font-weight: 600;
+}
+.playerTeam{
+  text-align: center;
+  padding: 0px 36px 18px 36px;
+  color: #004E98ad;
+  font-size: 14px;
+  font-weight: 600;
+}
+.ant-input-number{
+  margin-left: 8px !important;
+  width: 262px !important;
+  /* border-color: #7a7a7a; */
+}
+.ant-input-number-outlined:hover{
+  border-color: #004E98 ;
+}
+.mybtn{
+  width: 262px;
+  margin:6px 8px 6px 8px;
+  border-color: #d9d9d9;
+  border-radius: 6px;
+  border-style: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  padding: 8px;
+}
+.mybtn:hover{
+  border:1px solid #004E98;
+color: #004E98;
+font-size: 14px;
+font-weight: 500;
+background-color: transparent;
+}
+.submitbtn{
+  display: flex;
+  justify-content: space-around;
+}
+.homeCard{
+  padding: 40px 0px 60px 0px;
+}
+.emptyCard{
+  display: flex;
+
+}
+.homeCard h3{
+text-align: center;
+color: #004E98;
+font-size: 34px;
+line-height: 34px;
+font-weight: 400;
+font-family: 'poppins';
+}
+.collapesCard{
+  max-width: 1000px;
+  width: 100%;
+  margin: 0px auto;
+  padding: 60px 0px;
+  height: 68vh;
+}
+.collapesCard h3{
+  font-family: 'poppins';
+  color: #004E98;
+}
+.howWrokCard{
+  padding-left: 30px;
+}
+.howWrokCard li{
+  line-height: 50px;
+  font-family: 'poppinss';
+}
+
+.footerCard{
+  font-size: 14px;
+  font-weight: 500;
+  color: #004E98;
+text-align: center;
+}
+.custom-tooltip{
+  background: #000;
+  padding: 10px;
+  border-radius: 8px;
+  width: 160px;
+}
+.custom-tooltip p{
+ margin: 0px;
+ font-family: 'poppins';
+ font-size: 12px;
+ font-weight: 700;
+}
+.month-day{
+color: #4FACFE;
+}
+.earn-money{
+  color: #fff;
+}
+.bidCard{
+  padding-left: 30px;
+  display: flex;
+  width: 224px;
+  justify-content: space-between;
+}
+.bidAvg{
+  color: #004E98ad;
+
+}
+
+@media screen and (max-width:580px) {
+  .singleCard {
+    
+    grid-template-columns: repeat(1, 1fr);
+   max-width: 340px;
+}
+.mainCard img {
+  width: 100%;
+}
+.ant-input-number {
+  width: 94% !important;
+}
+.mybtn {
+  width: 94%;
+}
+.navCardright {
+  width: 70%;
+}
+.navCardright ul{
+  padding-left: 0px;
+}
+.collapesCard {
+  height: 74vh;
+}
+.howWrokCard li {
+  line-height: 30px;
+  width: 320px;
+  /* padding-right: 20px; */
+}
+.howWrokCard{
+  padding-left: 10px;
+}
+}

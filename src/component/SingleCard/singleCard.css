@@ -1,0 +1,27 @@
+.singleCardContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .modalButton {
+    background-color: #3a6ea5;
+    color: #ebebeb;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modalButton:hover {
+    background-color: #3a6ea5;
+  }
+  
