@@ -24,9 +24,13 @@ const BidChart = ({ playerName, playerTeam, graphData, statData, loading }) => {
     const fill = labelColors[index % labelColors.length];
     return (
       <text x={x} y={y} fill={fill} textAnchor="middle" dy={16}>
-        {payload.value}
+        {payload.value.split('-').map(num => num.trim())[0] === payload.value.split('-').map(num => num.trim())[1] 
+          ? payload.value.split('-').map(num => num.trim())[0] 
+          : payload.value}
       </text>
     );
+    
+    
   };
 
   const CustomTooltip = ({ active, payload }) => {
@@ -79,7 +83,7 @@ const BidChart = ({ playerName, playerTeam, graphData, statData, loading }) => {
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={graphData} style={{ marginTop: '20px' }} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
         <XAxis dataKey="label" tick={<CustomTick />} />
-          <Tooltip content={<CustomTooltip />} />
+          {/* <Tooltip content={<CustomTooltip />} /> */}
           <Bar
             dataKey="bids"
             fill="#004E98"
