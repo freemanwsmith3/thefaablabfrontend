@@ -1,0 +1,30 @@
+.fp-widget-container {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Margin for desktop view */
+@media (min-width: 768px) {
+  .fp-widget-container {
+    margin: 20px auto;
+    max-width: 60%;
+  }
+}
+
+.fpw-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #e0e0e0;
+}
+
+.fpw-footer a {
+  color: #035E7B;
+  text-decoration: none;
+}
+
+.fpw-footer a:hover {
+  text-decoration: underline;
+}

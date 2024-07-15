@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import image1 from "../../assets/images/image1.webp";
-import image2 from "../../assets/images/image2.webp";
-import image3 from "../../assets/images/image3.webp";
 import { InputNumber } from "antd";
 import BidChart from "../BarCharts/BarCharts";
 import axios from 'axios';
@@ -132,7 +129,7 @@ const SingleCard = ({ week }) => {
                       graphData={graphData[item.id]} 
                       statData={statData[item.id]}
                     />
-                  )}
+                  )} 
                 </div>
               ) : (
                 <>

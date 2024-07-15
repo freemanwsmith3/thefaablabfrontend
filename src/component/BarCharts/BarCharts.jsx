@@ -4,7 +4,7 @@ import { BarChart, Bar, Tooltip, ResponsiveContainer, LabelList, XAxis } from 'r
 import { CircularProgress } from '@mui/material';
 
 const BidChart = ({ playerName, playerTeam, graphData, statData, loading }) => {
-  const labelColors = ['#FF6700', '#004E98']; // Alternating colors
+  const labelColors = ['#002e2c', '#035E7B']; // Alternating colors
 
 
   const averageBid = statData.averageBid
@@ -48,19 +48,7 @@ const BidChart = ({ playerName, playerTeam, graphData, statData, loading }) => {
     return null;
   };
 
-  const CustomLabel = ({ x, y, value }) => (
-    <text
-      x={x}
-      y={y}
-      dy={10} // adjust this value to position the label vertically
-      textAnchor="middle"
-      fill="#666"
-      transform={`rotate(90, ${x}, ${y})`}
-      style={{ fontSize: '12px' }}
-    >
-      {value}
-    </text>
-  );
+
 
   return (
     <>
@@ -86,7 +74,7 @@ const BidChart = ({ playerName, playerTeam, graphData, statData, loading }) => {
           {/* <Tooltip content={<CustomTooltip />} /> */}
           <Bar
             dataKey="bids"
-            fill="#004E98"
+            fill="#035E7B"
             barSize={22}
             radius={[0, 0, 0, 0]}
           >
