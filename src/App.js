@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment-timezone';
 import { Route, Routes, useParams } from "react-router-dom";
 import Home from "./pages/Home";
+import FantasyProsWidget from "./component/FantasyPros/FantasyProsWidget";
 import Footer from "./component/Footer/Footer";
 import HowItWork from "./pages/HowItWork";
 import FAQS from "./component/FAQ/FAQS";
@@ -50,6 +51,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<Home defaultWk={autoWk} />} />
         <Route path="/history/:wk" element={<HomeWithWk />} />
+        <Route path="/rankings" element={<FantasyProsWidget />} />
         <Route path="/howitwork" element={<HowItWork />} />
         <Route path="/faq" element={<FAQS />} />
       </Routes>

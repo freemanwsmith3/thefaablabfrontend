@@ -1,28 +1,130 @@
-.dropdown-menu {
-    position: absolute;
-    top: 100%;
-    right: 0; /* Align to the right */
-    background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-    list-style: none;
-    margin: 0;
-    padding: 10px 0; /* Add space above items */
-    z-index: 1000;
-    display: none;
-    flex-direction: column; /* Ensure items stack vertically */
+.faab-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  padding-bottom: 0px;
 }
 
-.dropdown-menu.show {
+.navCard {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.navCardleft {
+  display: flex;
+  align-items: center;
+  margin-right: 10px; /* Adjust the margin as needed */
+}
+
+.navCardright {
+  display: flex;
+  align-items: center;
+}
+
+img.logo {
+  cursor: pointer;
+  width: 120px; /* Default size for desktop */
+  height: auto;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.menu li {
+  cursor: pointer;
+  position: relative;
+  color: #035E7B;
+  text-transform: uppercase;
+  font-size: 1.2rem; /* Larger font size */
+  font-weight: 400;
+  padding: 10px 20px; /* More padding */
+}
+
+.menu li:hover {
+  color: #035E7B;
+}
+
+.menu li::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; /* Adjust as needed */
+  left: 0;
+  width: 0; /* Initial width */
+  height: 2px; /* Adjust thickness as needed */
+  background-color: #035E7B; /* Adjust color as needed */
+  transition: width 0.3s ease; /* Smooth transition for width change */
+}
+
+.menu li:hover::after {
+  width: 100%; /* Extend the width to 100% on hover */
+}
+
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+  font-size: 24px;
+  margin-left: 20px;
+}
+
+@media (max-width: 768px) {
+  .navCardright {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  img.logo {
+    width: 100px; /* Smaller size for mobile */
+  }
+
+  .menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: white;
+    position: absolute;
+    top: 56px;
+    left: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    z-index: 1000;
+  }
+
+  .menu.open {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
 }
 
-.dropdown-menu li {
-    padding: 10px;
-    cursor: pointer;
-    white-space: nowrap; /* Prevent wrapping of text */
+.dropdown-menu {
+  position: absolute;
+  top: 56px; /* Adjust to align with AppBar */
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: fit-content; /* Only take as much space as needed */
 }
 
-.dropdown-menu li:hover {
-    background-color: #f0f0f0;
+.dropdown-menu-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dropdown-menu-item:hover {
+  background-color: #f0f0f0;
 }

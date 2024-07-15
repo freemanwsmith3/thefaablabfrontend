@@ -33,11 +33,11 @@ li{
 }
 .navCardright ul li{
   cursor: pointer;
-  color: #004E98;
+  color: #035E7B;
   position: relative; /* Added for positioning */
 }
 .navCardright ul li:hover{
-  color: #3A6EA5;
+  color: #035E7B;
 }
 .navCardright ul li::after {
   content: '';
@@ -46,7 +46,7 @@ li{
   left: 0;
   width: 0; /* Initial width */
   height: 2px; /* Adjust thickness as needed */
-  background-color: #004E98; /* Adjust color as needed */
+  background-color: #035E7B; /* Adjust color as needed */
   transition: width 0.3s ease; /* Smooth transition for width change */
 }
 .navCardright ul li:hover::after {
@@ -54,17 +54,17 @@ li{
 }
 .singleCard{
   max-width: 1140px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 10px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
 }
 .mainCard img{
   margin: 0px auto;
   width: 280px;
 }
 .mainCard{
-  border: 2px solid #004E98;
+  border: 2px solid #035E7B;
   border-radius: 6px;
   cursor: pointer;
   /* padding: 6px 0px; */
@@ -72,14 +72,14 @@ li{
 .playerTitle{
   text-align: center;
   padding: 18px 36px 0px 36px;
-  color: #004E98;
+  color: #035E7B;
   font-size: 16px;
   font-weight: 600;
 }
 .playerTeam{
   text-align: center;
   padding: 0px 36px 18px 36px;
-  color: #004E98ad;
+  color: #035E7Bad;
   font-size: 14px;
   font-weight: 600;
 }
@@ -89,7 +89,7 @@ li{
   /* border-color: #7a7a7a; */
 }
 .ant-input-number-outlined:hover{
-  border-color: #004E98 ;
+  border-color: #035E7B ;
 }
 .mybtn{
   width: 262px;
@@ -102,30 +102,31 @@ li{
   padding: 8px;
 }
 .mybtn:hover{
-  border:1px solid #004E98;
-color: #004E98;
-font-size: 14px;
-font-weight: 500;
-background-color: transparent;
+  border:1px solid #035E7B;
+  color: #035E7B;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: transparent;
 }
 .submitbtn{
   display: flex;
   justify-content: space-around;
 }
 .homeCard{
-  padding: 40px 0px 60px 0px;
+  padding: 0px 0px 60px 0px;
 }
 .emptyCard{
   display: flex;
 
 }
 .homeCard h3{
-text-align: center;
-color: #004E98;
-font-size: 34px;
-line-height: 34px;
-font-weight: 400;
-font-family: 'poppins';
+  padding-top: 0px;
+  text-align: center;
+  color: #035E7B;
+  font-size: 49px;
+  line-height: 34px;
+  font-weight: 400;
+  font-family: 'poppins';
 }
 .collapesCard{
   max-width: 1000px;
@@ -136,7 +137,7 @@ font-family: 'poppins';
 }
 .collapesCard h3{
   font-family: 'poppins';
-  color: #004E98;
+  color: #035E7B;
 }
 .howWrokCard{
   padding-left: 30px;
@@ -149,8 +150,8 @@ font-family: 'poppins';
 .footerCard{
   font-size: 14px;
   font-weight: 500;
-  color: #004E98;
-text-align: center;
+  color: #035E7B;
+  text-align: center;
 }
 .custom-tooltip{
   background: #000;
@@ -165,7 +166,7 @@ text-align: center;
  font-weight: 700;
 }
 .month-day{
-color: #4FACFE;
+  color: #4FACFE;
 }
 .earn-money{
   color: #fff;
@@ -177,40 +178,45 @@ color: #4FACFE;
   justify-content: space-between;
 }
 .bidAvg{
-  color: #004E98ad;
-
+  color: #035E7Bad;
 }
 
 @media screen and (max-width:580px) {
   .singleCard {
-    
     grid-template-columns: repeat(1, 1fr);
-   max-width: 340px;
+    max-width: 340px;
+  }
+  .mainCard img {
+    width: 100%;
+  }
+  .ant-input-number {
+    width: 94% !important;
+  }
+  .mybtn {
+    width: 94%;
+  }
+  .navCardright {
+    width: 70%;
+  }
+  .navCardright ul{
+    padding-left: 0px;
+  }
+  .collapesCard {
+    height: 74vh;
+  }
+  .howWrokCard li {
+    line-height: 30px;
+    width: 320px;
+    /* padding-right: 20px; */
+  }
+  .howWrokCard{
+    padding-left: 10px;
+  }
 }
-.mainCard img {
-  width: 100%;
-}
-.ant-input-number {
-  width: 94% !important;
-}
-.mybtn {
-  width: 94%;
-}
-.navCardright {
-  width: 70%;
-}
-.navCardright ul{
-  padding-left: 0px;
-}
-.collapesCard {
-  height: 74vh;
-}
-.howWrokCard li {
-  line-height: 30px;
-  width: 320px;
-  /* padding-right: 20px; */
-}
-.howWrokCard{
-  padding-left: 10px;
-}
+
+@media screen and (min-width: 1024px) {
+  .homeCard h3 {
+    font-size: 72px; /* Increase font size for larger screens */
+    line-height: 48px; /* Adjust line height accordingly */
+  }
 }

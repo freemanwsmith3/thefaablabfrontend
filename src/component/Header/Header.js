@@ -1,50 +1,122 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import logo from '../../assets/svg/logo.svg';
-import './header.css';
+import Typography from '@mui/material/Typography';
 
-const Header = ({ currentWk })=> {
-    const navigate = useNavigate();
-    const [showDropdown, setShowDropdown] = useState(false);
+const navItems = [
+  { name: 'This Week', path: '/' },
+  { name: 'Rankings', path: '/rankings' },
+  // { name: 'How It Works', path: '/howitwork' },
+];
 
-    const handleDropdownToggle = () => {
-        setShowDropdown(!showDropdown);
-    };
+function Header(props) {
+  const navigate = useNavigate();
+  const [menuAnchorEl, setMenuAnchorEl] = React.useState(null);
 
-    const handleDropdownClick = (week) => {
-        navigate(`/history/${week}`);
-        setShowDropdown(false);
-    };
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
 
-    const pastWeeks = Math.max(0, currentWk - 27); // Calculate the number of past weeks, ensuring it's not negative
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
 
-    return (
-        <div className='faab-container'>
-            <div className='navCard'>
-                <div className='navCardleft'>
-                    <img src={logo} alt='FAABLab' className='' onClick={() => navigate(`/`)} />
-                </div>
-                <div className='navCardright'>
-                    <ul>
-                        {pastWeeks > 0 && (
-                            <li className='dropdown' onClick={handleDropdownToggle}>
-                                Past Weeks ▼
-                                {showDropdown && (
-                                    <ul className='dropdown-menu'>
-                                        {[...Array(pastWeeks).keys()].map((week) => (
-                                            <li key={week} onClick={() => handleDropdownClick(week + 1)}>
-                                                Week {week + 1}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </li>
-                        )}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    );
-};
+  const handleNavigation = (path) => {
+    navigate(path);
+    handleMenuClose();
+  };
+
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar component="nav" sx={{ width: '100%', left: 0, right: 0, backgroundColor: '#035e7b' }}>
+        <Toolbar>
+        <img 
+        src={logo} 
+        alt='FAABLab' 
+        style={{
+          cursor: 'pointer',
+          width: '100px', // Reduced from 120px
+          height: 'auto', // Maintain aspect ratio
+          padding: '8px 0', // Add vertical padding
+          display: { xs: 'none', sm: 'block' }
+        }}
+        onClick={() => navigate(`/`)}
+      />
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+            {navItems.map((item) => (
+              <Button key={item.name} sx={{ color: '#fff', fontSize: '1.2rem', padding: '10px 20px' }} onClick={() => handleNavigation(item.path)}>
+                {item.name}
+              </Button>
+            ))}
+          </Box>
+          <IconButton
+            color="inherit"
+            aria-label="open menu"
+            edge="end"
+            onClick={handleMenuOpen}
+            sx={{ ml: 2, display: { sm: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+          anchorEl={menuAnchorEl}
+          open={Boolean(menuAnchorEl)}
+          onClose={handleMenuClose}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          PaperProps={{
+            style: {
+              width: '100%',
+              maxWidth: '100%',
+              left: 0,
+              right: 0,
+            },
+          }}
+          MenuListProps={{
+            style: {
+              padding: 0,
+            },
+          }}
+        >
+          {navItems.map((item) => (
+            <MenuItem 
+              key={item.name} 
+              onClick={() => handleNavigation(item.path)}
+              style={{
+                justifyContent: 'center',
+                padding: '12px 0',
+              }}
+            >
+              {item.name}
+            </MenuItem>
+          ))}
+        </Menu>
+        </Toolbar>
+      </AppBar>
+      <Box component="main" sx={{ p: 3 }}>
+        <Toolbar />
+        <Typography>
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
 
 export default Header;
