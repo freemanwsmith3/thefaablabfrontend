@@ -70,44 +70,39 @@ function Header(props) {
             <MenuIcon />
           </IconButton>
           <Menu
-          anchorEl={menuAnchorEl}
-          open={Boolean(menuAnchorEl)}
-          onClose={handleMenuClose}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          PaperProps={{
-            style: {
-              width: '100%',
-              maxWidth: '100%',
-              left: 0,
-              right: 0,
-            },
-          }}
-          MenuListProps={{
-            style: {
-              padding: 0,
-            },
-          }}
-        >
-          {navItems.map((item) => (
-            <MenuItem 
-              key={item.name} 
-              onClick={() => handleNavigation(item.path)}
-              style={{
-                justifyContent: 'center',
-                padding: '12px 0',
-              }}
-            >
-              {item.name}
-            </MenuItem>
-          ))}
-        </Menu>
+            anchorEl={menuAnchorEl}
+            open={Boolean(menuAnchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            PaperProps={{
+              style: {
+                width: 'auto',
+                minWidth: '200px', // Adjust this value as needed
+                maxWidth: '80%', // Prevents menu from being too wide on larger screens
+              },
+            }}
+          >
+            {navItems.map((item) => (
+              <MenuItem 
+                key={item.name} 
+                onClick={() => handleNavigation(item.path)}
+                style={{
+                  justifyContent: 'flex-start',
+                  padding: '12px 20px',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {item.name}
+              </MenuItem>
+            ))}
+          </Menu>
         </Toolbar>
       </AppBar>
       <Box component="main" sx={{ p: 3 }}>
