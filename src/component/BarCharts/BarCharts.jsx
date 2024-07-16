@@ -1,23 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { BarChart, Bar, Tooltip, ResponsiveContainer, LabelList, XAxis } from 'recharts';
-import { CircularProgress } from '@mui/material';
+import React from 'react';
+import { BarChart, Bar, ResponsiveContainer, LabelList, XAxis } from 'recharts';
+import './barCharts.css';
 
-const BidChart = ({ playerName, playerTeam, graphData, statData, loading }) => {
-  const labelColors = ['#002e2c', '#035E7B']; // Alternating colors
+const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) => {
+  const labelColors = ['#002E2C', '#035E7B'];
 
-
-  const averageBid = statData.averageBid
-  const medianBid = statData.medianBid
-  const mostCommonBid = statData.mostCommonBid
-  const numberOfBids = statData.numberOfBids
-
-  function formatEarnings(value) {
-    if (value >= 1000) {
-      return `${value}`;
-    }
-    return `${value}`;
-  }
+  const { averageBid, medianBid, mostCommonBid, numberOfBids } = statData;
 
   const CustomTick = (props) => {
     const { x, y, payload, index } = props;
@@ -29,49 +17,35 @@ const BidChart = ({ playerName, playerTeam, graphData, statData, loading }) => {
           : payload.value}
       </text>
     );
-    
-    
   };
-
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="custom-tooltip">
-          <p className='month-day'>{`${playerName}`}</p>
-          <p className='month-day'>{`${playerTeam}`}</p>
-          <p className='earn-money'>{`Average Bid: ${formatEarnings(averageBid)}%`}</p>
-          <p className='earn-money'>{`Number of Bids: ${formatEarnings(numberOfBids)}`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-
 
   return (
-    <>
-      <div className='mainBar'>
-        <div className="playerTitle">{playerName}</div>
-        <div className="playerTeam">{playerTeam}</div>
-        <div className='bidCard'>
-          Average Bid: <strong className="bidAvg">{averageBid}%</strong>
+    <div className="bid-chart-container">
+      <div className="bid-chart-title">
+        <h2 className="playerName">{playerName} </h2>
+        <h3 className="playerTitle">{playerPos} - {playerTeam}</h3>
+      </div>
+      <div className="bid-cards-container">
+        <div className="bid-card">
+          <div className="bid-label">Average Bid</div>
+          <div className="bid-value">{averageBid}%</div>
         </div>
-        <div className='bidCard'>
-          Median Bid:  <strong className="bidAvg">{medianBid}%</strong>
+        <div className="bid-card">
+          <div className="bid-label">Median Bid</div>
+          <div className="bid-value">{medianBid}%</div>
         </div>
-        <div className='bidCard'>
-          Most Common Bid: <strong className="bidAvg">{mostCommonBid}%</strong>
+        <div className="bid-card">
+          <div className="bid-label">Most Common</div>
+          <div className="bid-value">{mostCommonBid}%</div>
         </div>
-        <div className='bidCard'>
-          Number of Bids: <strong className="bidAvg">{numberOfBids}</strong>
+        <div className="bid-card">
+          <div className="bid-label">Number of Bids</div>
+          <div className="bid-value">{numberOfBids}</div>
         </div>
       </div>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={graphData} style={{ marginTop: '20px' }} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
-        <XAxis dataKey="label" tick={<CustomTick />} />
-          {/* <Tooltip content={<CustomTooltip />} /> */}
+        <BarChart data={graphData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
+          <XAxis dataKey="label" tick={<CustomTick />} />
           <Bar
             dataKey="bids"
             fill="#035E7B"
@@ -82,7 +56,7 @@ const BidChart = ({ playerName, playerTeam, graphData, statData, loading }) => {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </>
+    </div>
   );
 };
 

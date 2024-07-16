@@ -126,6 +126,7 @@ const SingleCard = ({ week }) => {
                     <BidChart
                       playerName={item.name}
                       playerTeam={item.team}
+                      playerPos={item.position}
                       graphData={graphData[item.id]} 
                       statData={statData[item.id]}
                     />
@@ -134,8 +135,8 @@ const SingleCard = ({ week }) => {
               ) : (
                 <>
                   <img src={item.image} alt="missing" />
-                  <div className="playerTitle">{item.name} - {item.position}</div>
-                  <div className="playerTeam">{item.team}</div>
+                  <div className="playerTitle">{item.name}  </div>
+                  <div className="playerTeam">{item.position} - {item.team}</div>
                   <div className="">
                     <InputNumber
                       min={0}

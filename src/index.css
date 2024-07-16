@@ -75,13 +75,16 @@ li{
   color: #035E7B;
   font-size: 16px;
   font-weight: 600;
+  font-size: 24px !important;
+  font-weight: 600 !important;
 }
 .playerTeam{
   text-align: center;
   padding: 0px 36px 18px 36px;
   color: #035E7Bad;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+
 }
 .ant-input-number{
   margin-left: 8px !important;

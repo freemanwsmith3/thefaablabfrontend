@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 const navItems = [
   { name: 'This Week', path: '/' },
   { name: 'Rankings', path: '/rankings' },
-  // { name: 'How It Works', path: '/howitwork' },
+  { name: 'About', path: '/about' },
 ];
 
 function Header(props) {
