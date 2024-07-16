@@ -7,6 +7,7 @@ import FantasyProsWidget from "./component/FantasyPros/FantasyProsWidget";
 import Footer from "./component/Footer/Footer";
 import HowItWork from "./pages/HowItWork";
 import FAQS from "./component/FAQ/FAQS";
+import About from "./pages/About";
 
 function App() {
   // here is where i am setting default week (28) = 1
@@ -53,6 +54,7 @@ function App() {
         <Route path="/history/:wk" element={<HomeWithWk />} />
         <Route path="/rankings" element={<FantasyProsWidget />} />
         <Route path="/howitwork" element={<HowItWork />} />
+        <Route path="/about" element={<About />} />
         <Route path="/faq" element={<FAQS />} />
       </Routes>
       <Footer />

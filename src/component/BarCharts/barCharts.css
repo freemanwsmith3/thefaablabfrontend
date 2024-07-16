@@ -1,0 +1,88 @@
+/* BidChart.css */
+
+.bid-chart-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Poppins', Arial, sans-serif !important;
+}
+
+.bid-chart-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* .bid-chart-container .bid-chart-title h2.player-name {
+  margin-bottom: 5px;
+  color: #002E2C !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+}
+
+.bid-chart-container .bid-chart-title h3.player-team {
+  margin-top: 0;
+  color: #035E7B !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+} */
+
+/* Rest of your CSS remains the same */
+
+.bid-chart-title h2 {
+  margin-bottom: 5px;
+  color: #035E7B;
+  
+  font-size: 24px !important;
+  font-weight: 600 !important;
+}
+
+.bid-chart-title h3 {
+  margin-top: 0;
+  color: #035E7Bad;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  line-height: 1.4; /* Add this line */
+}
+.bid-cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.bid-card {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.bid-label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #002E2C !important;
+}
+
+.bid-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #035E7B !important;
+}
+
+@media (max-width: 480px) {
+  .bid-chart-container {
+    padding: 10px;
+  }
+
+  .bid-card {
+    padding: 8px;
+  }
+
+  .bid-label {
+    font-size: 12px;
+  }
+
+  .bid-value {
+    font-size: 16px;
+  }
+}
