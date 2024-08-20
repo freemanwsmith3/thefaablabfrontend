@@ -27,7 +27,7 @@ const About = () => {
       <ul>
         <li>Reddit: <a href="https://www.reddit.com/user/blopsk" target="_blank" rel="noopener noreferrer">u/blopsk</a></li>
         <li>Twitter: <a href="https://twitter.com/blopsk" target="_blank" rel="noopener noreferrer">@blopsk</a></li>
-        <li>Email: <a href="mailto:faablabapp@gmail.com">faablabapp@gmail.com</a></li>
+        {/* <li>Email: <a href="mailto:faablabapp@gmail.com">faablabapp@gmail.com</a></li> */}
       </ul>
     </div>
   );

@@ -12,26 +12,9 @@
   margin-bottom: 20px;
 }
 
-/* .bid-chart-container .bid-chart-title h2.player-name {
-  margin-bottom: 5px;
-  color: #002E2C !important;
-  font-size: 24px !important;
-  font-weight: 600 !important;
-}
-
-.bid-chart-container .bid-chart-title h3.player-team {
-  margin-top: 0;
-  color: #035E7B !important;
-  font-size: 18px !important;
-  font-weight: 400 !important;
-} */
-
-/* Rest of your CSS remains the same */
-
 .bid-chart-title h2 {
   margin-bottom: 5px;
   color: #035E7B;
-  
   font-size: 24px !important;
   font-weight: 600 !important;
 }
@@ -43,6 +26,7 @@
   font-weight: 400 !important;
   line-height: 1.4; /* Add this line */
 }
+
 .bid-cards-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -51,10 +35,14 @@
 }
 
 .bid-card {
+  display: flex; /* Add this line */
+  flex-direction: column; /* Add this line */
+  justify-content: center; /* Add this line */
   background-color: #f0f0f0;
   border-radius: 8px;
   padding: 10px;
   text-align: center;
+  height: 100px; /* Add this line to ensure equal height */
 }
 
 .bid-label {
@@ -76,6 +64,7 @@
 
   .bid-card {
     padding: 8px;
+    height: auto; /* Add this line for responsive design */
   }
 
   .bid-label {

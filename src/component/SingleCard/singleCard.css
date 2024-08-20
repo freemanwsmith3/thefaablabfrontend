@@ -22,5 +22,35 @@
 }
 
 .modalButton:hover {
+  background-color: #02455C;
+}
+
+
+/* Position filter button styles */
+.positionFilterContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.positionFilterButton {
+  padding: 8px 15px;
+  font-size: 14px;
+  color: #035E7B;
+  background-color: #ebebeb;
+  border: 1px solid #035E7B;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.positionFilterButton.active {
   background-color: #035E7B;
+  color: #ffffff;
+}
+
+.positionFilterButton:hover {
+  background-color: #02455C;
+  color: #ffffff;
 }

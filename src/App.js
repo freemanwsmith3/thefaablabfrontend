@@ -8,6 +8,7 @@ import Footer from "./component/Footer/Footer";
 import HowItWork from "./pages/HowItWork";
 import FAQS from "./component/FAQ/FAQS";
 import About from "./pages/About";
+import Auction from "./pages/Auction";
 
 function App() {
   // here is where i am setting default week (28) = 1
@@ -50,7 +51,10 @@ function App() {
     <div className="">
       <Header currentWk={autoWk} />
       <Routes>
-        <Route exact path="/" element={<Home defaultWk={autoWk} />} />
+        {/* change after week 0 */}
+        {/* <Route exact path="/" element={<Home defaultWk={autoWk} />} /> */}
+        <Route exact path="/" element={<Auction />} />
+        <Route path="/auction" element={<Auction />} />
         <Route path="/history/:wk" element={<HomeWithWk />} />
         <Route path="/rankings" element={<FantasyProsWidget />} />
         <Route path="/howitwork" element={<HowItWork />} />

@@ -39,10 +39,15 @@
   }
   
   .aboutContainer ol {
+    list-style-type: disc;
     color: #333;
     font-size: 18px;
     margin-bottom: 20px;
     padding-left: 20px;
+  }
+  
+  .aboutContainer ol li {
+    margin-bottom: 10px;
   }
   
   .aboutContainer a {

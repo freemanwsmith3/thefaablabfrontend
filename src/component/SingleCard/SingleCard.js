@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { InputNumber } from "antd";
+import { InputNumber, Input } from "antd";
 import BidChart from "../BarCharts/BarCharts";
 import axios from 'axios';
 import { CircularProgress } from '@mui/material';
-import HowItWorkModal from './HowItWorkModal'; // Import the modal component
+import HowItWorkModal from './HowItWorkModal'; // Import the standard modal component
+import HowItWorksAuction from './HowItWorksAuction'; // Import the auction modal component
 import './singleCard.css'; // Import the CSS file
 
 const SingleCard = ({ week }) => {
@@ -14,20 +15,22 @@ const SingleCard = ({ week }) => {
   const [statData, setStatData] = useState([]);
   const [bidValue, setBidValue] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
+  const [searchQuery, setSearchQuery] = useState(''); // State for player name search
+  const [positionFilter, setPositionFilter] = useState(''); // State for position filter
+
   const apiUrl = 'https://faablab.herokuapp.com/api';
+
   const onChange = (value) => {
     setBidValue(value);
   };
 
   const sendBid = async (playerID) => {
     try {
-      // Dictionary of data to send
       const data = {
         week: week,
         player: playerID,
         value: bidValue,
       };
-      // Send POST request with axios
       const response = await axios.post(`${apiUrl}/bid`, data);
     } catch (error) {
       console.error('Error sending bid:', error.response ? error.response.data : error.message);
@@ -36,7 +39,6 @@ const SingleCard = ({ week }) => {
 
   const handleButtonClick = (index, playerID) => {
     setClickedIndex((prevIndices) => {
-      // Check if the index is already in the array
       if (!prevIndices.includes(index)) {
         return [...prevIndices, index];
       }
@@ -45,7 +47,6 @@ const SingleCard = ({ week }) => {
     sendBid(playerID);
   };
 
-  // Load items from localStorage on component mount
   useEffect(() => {
     const visibleItems = JSON.parse(localStorage.getItem('visible'));
     if (visibleItems) {
@@ -53,7 +54,6 @@ const SingleCard = ({ week }) => {
     }
   }, []);
 
-  // Save items to localStorage whenever the items array changes
   useEffect(() => {
     localStorage.setItem('visible', JSON.stringify(clickedIndex));
   }, [clickedIndex]);
@@ -87,7 +87,10 @@ const SingleCard = ({ week }) => {
     fetchTargets();
   }, [week]);
 
-  // Functions to handle modal visibility
+  const getPlaceholderText = () => {
+    return week === 1000 ? 'Your Auction Bid ($)' : '% of initial FAAB';
+  };
+
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -100,14 +103,51 @@ const SingleCard = ({ week }) => {
     setIsModalVisible(false);
   };
 
+  // Filtered data based on search query and position filter
+  const filteredData = data.filter((player) => {
+    const matchesSearch = player.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesPosition = positionFilter ? player.position === positionFilter : true;
+    return matchesSearch && matchesPosition;
+  });
+
   return (
     <div className="singleCardContainer">
       <div className="buttonContainer">
         <button onClick={showModal} className="modalButton">How It Works</button>
       </div>
-      <HowItWorkModal isVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} /> {/* Modal component */}
+      
+      {/* Conditionally render the correct modal component */}
+      {week === 1000 ? (
+        <HowItWorksAuction isVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />
+      ) : (
+        <HowItWorkModal isVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />
+      )}
+      
+      {/* Add the search and filter controls */}
+      <div className="filterContainer">
+        <Input 
+          placeholder="Search by player name" 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ width: 200, marginRight: 10, marginBottom: 15}}
+        />
+      </div>
+
+      {/* Position Filter Buttons */}
+      <div className="positionFilterContainer">
+        {['All', 'QB', 'RB', 'WR', 'TE'].map((position) => (
+          <button
+            key={position}
+            className={`positionFilterButton ${positionFilter === position || (position === 'All' && positionFilter === '') ? 'active' : ''}`}
+            onClick={() => setPositionFilter(position === 'All' ? '' : position)}
+          >
+            {position}
+          </button>
+        ))}
+      </div>
+
       <div className="singleCard">
-        {data.map((item, index) => (
+        {filteredData.map((item, index) => (
           <React.Fragment key={index}>
             {index % 6 === 0 && index !== 0 && (
               <div className="mainCard emptyCard">
@@ -137,13 +177,13 @@ const SingleCard = ({ week }) => {
                   <img src={item.image} alt="missing" />
                   <div className="playerTitle">{item.name}  </div>
                   <div className="playerTeam">{item.position} - {item.team}</div>
-                  <div className="">
+                  <div className="inputContainer">
                     <InputNumber
                       min={0}
                       max={100}
                       onChange={(value) => onChange(value)}
                       changeOnWheel
-                      placeholder="% of initial FAAB"
+                      placeholder={getPlaceholderText()} // Use the function here
                       type="number"
                     />
                     <button
