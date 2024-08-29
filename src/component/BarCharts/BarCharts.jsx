@@ -36,7 +36,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
         </div>
         <div className="bid-card">
           <div className="bid-label">Most Common</div>
-          <div className="bid-value">{mostCommonBid}</div>
+          <div className="bid-value">${mostCommonBid}</div>
         </div>
         <div className="bid-card">
           <div className="bid-label">Number of Bids</div>
