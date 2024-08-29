@@ -1,11 +1,10 @@
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
 
 export const initGA = () => {
-  ReactGA.initialize('G-T7FEVCTMQS'); // Your Google Analytics Property ID
+  ReactGA.initialize('G-T7FEVCTMQS'); // Replace with your GA4 Measurement ID
 };
 
 export const logPageView = () => {
-    console.log('Logging pageview for', window.location.pathname);
-    ReactGA.set({ page: window.location.pathname });
-    ReactGA.pageview(window.location.pathname);
+  console.log('Logging pageview for', window.location.pathname); // For debugging
+  ReactGA.send({ hitType: "pageview", page: window.location.pathname });
 };

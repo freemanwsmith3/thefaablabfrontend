@@ -9,7 +9,7 @@ import HowItWork from "./pages/HowItWork";
 import FAQS from "./component/FAQ/FAQS";
 import About from "./pages/About";
 import Auction from "./pages/Auction";
-import { initGA, logPageView } from './analytics'; // Import analytics functions
+import { initGA, logPageView } from './analytics'; // Updated import
 
 function App() {
   const startWeek = 27;
@@ -17,7 +17,7 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    initGA(); // Initialize Google Analytics
+    initGA(); // Initialize Google Analytics with GA4 ID
     logPageView(); // Log the first page view
   }, []);
 
@@ -52,13 +52,11 @@ function App() {
 
     return () => clearInterval(timerId);
   }, []);
-  
+
   return (
     <div className="">
       <Header currentWk={autoWk} />
       <Routes>
-        {/* change after week 0 */}
-        {/* <Route exact path="/" element={<Home defaultWk={autoWk} />} /> */}
         <Route exact path="/" element={<Auction />} />
         <Route path="/auction" element={<Auction />} />
         <Route path="/history/:wk" element={<HomeWithWk />} />
