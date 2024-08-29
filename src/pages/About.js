@@ -6,7 +6,7 @@ const About = () => {
     <div className="aboutContainer">
       <h1>About FaabLab</h1>
       <p>
-      Use FaabLab to get an edge on waiverse. Don't be the joke of your league by dropping half your budget in week one for some back up runningback. 
+      Use FaabLab to get an edge on waivers. Don't be the joke of your league by dropping half your budget in week one for some back up runningback. 
       </p>
       <h2>What is it?</h2>
         <p>You know how you do a mock draft before the season to have a good idea where guys will go? This is the same thing but for your weekly free agent auction. Use the tool to see how much you should bid in your real league.</p>
