@@ -13,6 +13,8 @@ const HowItWorksAuction = ({ isVisible, handleOk, handleCancel }) => {
         <li><CheckOutlined style={{paddingRight:'10px',color:'#035E7B'}}/> Below are the top players for 2024</li>
         <li><CheckOutlined style={{paddingRight:'10px',color:'#035E7B'}}/> Submit what you plan to bid in your league (Auction values should be out of $100)
         </li>
+        <li><CheckOutlined style={{paddingRight:'10px',color:'#035E7B'}}/> This is Half PPR, 4pt QB touchdowns, 12 team, 1QB, 2WR, 2RB, 1 Flex, 1 TE, 1 Def, 1 Kicker
+        </li>
         <li><CheckOutlined style={{paddingRight:'10px',color:'#035E7B'}}/> Zero % bids will not be stored, but will allow you to see the data
         </li>
         <li><CheckOutlined style={{paddingRight:'10px',color:'#035E7B'}}/> After submission, the consensus data will be shown to you</li>
