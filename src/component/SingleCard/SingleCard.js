@@ -88,7 +88,7 @@ const SingleCard = ({ week }) => {
   }, [week]);
 
   const getPlaceholderText = () => {
-    return week === 1000 ? 'Your Auction Bid ($)' : '% of initial FAAB';
+    return week === 1000 ? 'Your Auction bid out of $200' : '% of initial FAAB';
   };
 
   const showModal = () => {

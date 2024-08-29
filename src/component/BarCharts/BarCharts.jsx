@@ -28,15 +28,15 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
       <div className="bid-cards-container">
         <div className="bid-card">
           <div className="bid-label">Average Bid</div>
-          <div className="bid-value">{averageBid}%</div>
+          <div className="bid-value">${averageBid}</div>
         </div>
         <div className="bid-card">
           <div className="bid-label">Median Bid</div>
-          <div className="bid-value">{medianBid}%</div>
+          <div className="bid-value">${medianBid}</div>
         </div>
         <div className="bid-card">
           <div className="bid-label">Most Common</div>
-          <div className="bid-value">{mostCommonBid}%</div>
+          <div className="bid-value">{mostCommonBid}</div>
         </div>
         <div className="bid-card">
           <div className="bid-label">Number of Bids</div>
