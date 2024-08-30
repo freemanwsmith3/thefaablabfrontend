@@ -17,7 +17,7 @@ const SingleCard = ({ week }) => {
   const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
   const [searchQuery, setSearchQuery] = useState(''); // State for player name search
   const [positionFilter, setPositionFilter] = useState(''); // State for position filter
-
+  //const apiUrl = 'http://127.0.0.1:8000/api';
   const apiUrl = 'https://faablab.herokuapp.com/api';
 
   const onChange = (value) => {
@@ -149,13 +149,38 @@ const SingleCard = ({ week }) => {
       <div className="singleCard">
         {filteredData.map((item, index) => (
           <React.Fragment key={index}>
-            {index % 6 === 0 && index !== 0 && (
-              <div className="mainCard emptyCard">
-                <img
-                  src="https://www.draftdashboard.com/creatives/creative300anim.gif"
-                  alt="Advertisement"
-                />
+            {index % 10 === 0 && index !== 0 && (
+                <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  
+                }}>
+                <a href="https://446ed-g0ded8ibu4-5tpk732eo.hop.clickbank.net/?&traffic_source=blog&traffic_type=organic" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src="https://www.draftdashboard.com/creatives/creative300anim.gif"
+                    alt="Advertisement"
+                  />
+                </a>
               </div>
+            )}
+            {index % 5 === 0 && index !== 0 && index % 10 !== 0  && (
+                <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  
+                }}>
+              <a href='https://www.dailyfantasynerd.com?afmc=ba' target="_blank" rel="noopener noreferrer">
+                <img
+                  src='https://leaddyno-client-images.s3.amazonaws.com/71204ad8ccb61f89f443611d24ec951b101516a9/0ec7cd0a590b758c96e947630563cfbbbbb6f049_DFN-NFL-300x250.png'
+                  alt="Daily Fantasy Nerd"
+                  style={{ width: '300px', height: '250px' }}
+                />
+              </a>
+            </div>
             )}
             <div className="mainCard">
               {clickedIndex.includes(index) ? (
