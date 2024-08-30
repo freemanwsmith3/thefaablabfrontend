@@ -149,7 +149,7 @@ const SingleCard = ({ week }) => {
       <div className="singleCard">
         {filteredData.map((item, index) => (
           <React.Fragment key={index}>
-            {index % 10 === 0 && index !== 0 && (
+            {index % 8 === 0 && index !== 0 && (
                 <div
                 style={{
                   display: 'flex',
@@ -165,7 +165,7 @@ const SingleCard = ({ week }) => {
                 </a>
               </div>
             )}
-            {index % 5 === 0 && index !== 0 && index % 10 !== 0  && (
+            {index % 4 === 0 && index !== 0 && index % 8 !== 0  && (
                 <div
                 style={{
                   display: 'flex',
