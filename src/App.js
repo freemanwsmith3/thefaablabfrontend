@@ -54,7 +54,7 @@ function App() {
   // }, []);
 
   //setting week for now so ignore the rest above
-  let curWk = 28
+  const curWk = 28
   return (
     <div className="">
       <Header currentWk={curWk} />
