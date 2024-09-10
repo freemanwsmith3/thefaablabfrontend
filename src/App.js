@@ -1,67 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment-timezone';
-import { Route, Routes, useParams, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Header from "./component/Header/Header";
-import Home from "./pages/Home";
+import Home from "./pages/Home"; // Import the separate HomeWithWk component
 import FantasyProsWidget from "./component/FantasyPros/FantasyProsWidget";
 import Footer from "./component/Footer/Footer";
 import HowItWork from "./pages/HowItWork";
 import FAQS from "./component/FAQ/FAQS";
 import About from "./pages/About";
 import Auction from "./pages/Auction";
-import { initGA, logPageView } from './analytics'; // Updated import
+import { initGA, logPageView } from './analytics';
 
 function App() {
-  const startWeek = 27;
-  // const [autoWk, setAutoWk] = useState(startWeek);
-  // const location = useLocation();
-
   useEffect(() => {
-    initGA(); // Initialize Google Analytics with GA4 ID
-    logPageView(); // Log the first page view
+    initGA();
+    logPageView();
   }, []);
 
-  useEffect(() => {
-    logPageView(); // Log page view on route change
-  }, [location]);
+  const [curWk, setCurWk] = useState(29);
 
-  // useEffect(() => {
-  //   const calculateAutoWk = () => {
-  //     const startDate = moment.tz('2024-09-10 05:00', 'America/New_York');
-  //     const endDate = moment.tz('2024-12-10 05:00', 'America/New_York');
-  //     const now = moment.tz('America/New_York');
-
-  //     if (now.isBefore(startDate)) {
-  //       setAutoWk(startWeek);
-  //     } else if (now.isAfter(endDate)) {
-  //       clearInterval(timerId);
-  //     } else {
-  //       const weeksPassed = now.diff(startDate, 'weeks');
-  //       setAutoWk(startWeek + weeksPassed);
-  //     }
-  //   };
-
-  //   calculateAutoWk();
-
-  //   const timerId = setInterval(() => {
-  //     const now = moment.tz('America/New_York');
-  //     if (now.day() === 2 && now.hour() === 5) {
-  //       calculateAutoWk();
-  //     }
-  //   }, 3600000);
-
-  //   return () => clearInterval(timerId);
-  // }, []);
-
-  //setting week for now so ignore the rest above
-  const curWk = 28
   return (
     <div className="">
       <Header currentWk={curWk} />
       <Routes>
-        <Route exact path="/" element={<HomeWithWk />} />
+        <Route exact path="/" element={<Home curWk={curWk} />} />
         <Route path="/auction" element={<Auction />} />
-        <Route path="/history/:wk" element={<HomeWithWk />} />
+        <Route path="/history/:wk" element={<Home curWk={curWk} />} />
         <Route path="/rankings" element={<FantasyProsWidget />} />
         <Route path="/howitwork" element={<HowItWork />} />
         <Route path="/about" element={<About />} />
@@ -71,10 +34,5 @@ function App() {
     </div>
   );
 }
-
-const HomeWithWk = () => {
-  const { wk } = useParams();
-  return <Home wk={wk} />;
-};
 
 export default App;
