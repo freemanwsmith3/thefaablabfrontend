@@ -57,7 +57,7 @@ function App() {
     <div className="">
       <Header currentWk={autoWk} />
       <Routes>
-        <Route exact path="/" element={<Auction />} />
+        <Route exact path="/" element={<HomeWithWk />} />
         <Route path="/auction" element={<Auction />} />
         <Route path="/history/:wk" element={<HomeWithWk />} />
         <Route path="/rankings" element={<FantasyProsWidget />} />
