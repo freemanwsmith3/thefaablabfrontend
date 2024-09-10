@@ -50,6 +50,7 @@ const SingleCard = ({ week }) => {
   useEffect(() => {
     const visibleItems = JSON.parse(localStorage.getItem('visible'));
     if (visibleItems) {
+      console.log(visibleItems)
       setClickedIndex(visibleItems);
     }
   }, []);
@@ -69,11 +70,9 @@ const SingleCard = ({ week }) => {
   
         const players = targetsResponse.data.players;
         const stats = statsResponse.data.stats;
-        console.log(players)
-        console.log(stats)
+
         // Sort players based on the numberOfBids in the stats
         const sortedPlayers = players.sort((a, b) => {
-          console.log(stats[b.id].numberOfBids)
           const aBids = (stats[a.id]?.numberOfBids === "You're the 1st bid") ? 0 : stats[a.id]?.numberOfBids || 0;
           const bBids = (stats[b.id]?.numberOfBids === "You're the 1st bid") ? 0 : stats[b.id]?.numberOfBids || 0;
         
@@ -193,7 +192,7 @@ const SingleCard = ({ week }) => {
             </div>
             )}
             <div className="mainCard">
-              {clickedIndex.includes(index) ? (
+              {clickedIndex.includes(item.target_id) ? (
                 <div>
                   {loading ? (
                     <CircularProgress />
@@ -223,7 +222,7 @@ const SingleCard = ({ week }) => {
                     />
                     <button
                       className="mybtn"
-                      onClick={() => handleButtonClick(index, item.id)}
+                      onClick={() => handleButtonClick(item.target_id, item.id)}
                     >
                       SUBMIT
                     </button>
