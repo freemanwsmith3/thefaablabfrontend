@@ -13,49 +13,51 @@ import { initGA, logPageView } from './analytics'; // Updated import
 
 function App() {
   const startWeek = 27;
-  const [autoWk, setAutoWk] = useState(startWeek);
-  const location = useLocation();
+  // const [autoWk, setAutoWk] = useState(startWeek);
+  // const location = useLocation();
 
-  useEffect(() => {
-    initGA(); // Initialize Google Analytics with GA4 ID
-    logPageView(); // Log the first page view
-  }, []);
+  // useEffect(() => {
+  //   initGA(); // Initialize Google Analytics with GA4 ID
+  //   logPageView(); // Log the first page view
+  // }, []);
 
-  useEffect(() => {
-    logPageView(); // Log page view on route change
-  }, [location]);
+  // useEffect(() => {
+  //   logPageView(); // Log page view on route change
+  // }, [location]);
 
-  useEffect(() => {
-    const calculateAutoWk = () => {
-      const startDate = moment.tz('2024-09-10 05:00', 'America/New_York');
-      const endDate = moment.tz('2024-12-10 05:00', 'America/New_York');
-      const now = moment.tz('America/New_York');
+  // useEffect(() => {
+  //   const calculateAutoWk = () => {
+  //     const startDate = moment.tz('2024-09-10 05:00', 'America/New_York');
+  //     const endDate = moment.tz('2024-12-10 05:00', 'America/New_York');
+  //     const now = moment.tz('America/New_York');
 
-      if (now.isBefore(startDate)) {
-        setAutoWk(startWeek);
-      } else if (now.isAfter(endDate)) {
-        clearInterval(timerId);
-      } else {
-        const weeksPassed = now.diff(startDate, 'weeks');
-        setAutoWk(startWeek + weeksPassed);
-      }
-    };
+  //     if (now.isBefore(startDate)) {
+  //       setAutoWk(startWeek);
+  //     } else if (now.isAfter(endDate)) {
+  //       clearInterval(timerId);
+  //     } else {
+  //       const weeksPassed = now.diff(startDate, 'weeks');
+  //       setAutoWk(startWeek + weeksPassed);
+  //     }
+  //   };
 
-    calculateAutoWk();
+  //   calculateAutoWk();
 
-    const timerId = setInterval(() => {
-      const now = moment.tz('America/New_York');
-      if (now.day() === 2 && now.hour() === 5) {
-        calculateAutoWk();
-      }
-    }, 3600000);
+  //   const timerId = setInterval(() => {
+  //     const now = moment.tz('America/New_York');
+  //     if (now.day() === 2 && now.hour() === 5) {
+  //       calculateAutoWk();
+  //     }
+  //   }, 3600000);
 
-    return () => clearInterval(timerId);
-  }, []);
+  //   return () => clearInterval(timerId);
+  // }, []);
 
+  //setting week for now so ignore the rest above
+  let curWk = 28
   return (
     <div className="">
-      <Header currentWk={autoWk} />
+      <Header currentWk={curWk} />
       <Routes>
         <Route exact path="/" element={<HomeWithWk />} />
         <Route path="/auction" element={<Auction />} />
