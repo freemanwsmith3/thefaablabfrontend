@@ -16,14 +16,14 @@ function App() {
   // const [autoWk, setAutoWk] = useState(startWeek);
   // const location = useLocation();
 
-  // useEffect(() => {
-  //   initGA(); // Initialize Google Analytics with GA4 ID
-  //   logPageView(); // Log the first page view
-  // }, []);
+  useEffect(() => {
+    initGA(); // Initialize Google Analytics with GA4 ID
+    logPageView(); // Log the first page view
+  }, []);
 
-  // useEffect(() => {
-  //   logPageView(); // Log page view on route change
-  // }, [location]);
+  useEffect(() => {
+    logPageView(); // Log page view on route change
+  }, [location]);
 
   // useEffect(() => {
   //   const calculateAutoWk = () => {
@@ -54,7 +54,7 @@ function App() {
   // }, []);
 
   //setting week for now so ignore the rest above
-  let curWk = 28
+  const curWk = 28
   return (
     <div className="">
       <Header currentWk={curWk} />
