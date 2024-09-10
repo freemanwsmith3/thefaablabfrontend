@@ -77,7 +77,8 @@ const SingleCard = ({ week }) => {
         const response = await axios.get(`${apiUrl}/targets`, {
           params: { week }
         });
-        setData(response.data.players);
+        const sortedPlayers = response.data.players.sort((a, b) => a.target_id - b.target_id);
+        setData(sortedPlayers);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
