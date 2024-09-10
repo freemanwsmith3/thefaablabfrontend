@@ -59,34 +59,43 @@ const SingleCard = ({ week }) => {
   }, [clickedIndex]);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/stats`, {
-          params: { week }
+        // Fetch both targets and stats in parallel
+        const [targetsResponse, statsResponse] = await Promise.all([
+          axios.get(`${apiUrl}/targets`, { params: { week } }),
+          axios.get(`${apiUrl}/stats`, { params: { week } })
+        ]);
+  
+        const players = targetsResponse.data.players;
+        const stats = statsResponse.data.stats;
+        console.log(players)
+        console.log(stats)
+        // Sort players based on the numberOfBids in the stats
+        const sortedPlayers = players.sort((a, b) => {
+          console.log(stats[b.id].numberOfBids)
+          const aBids = (stats[a.id]?.numberOfBids === "You're the 1st bid") ? 0 : stats[a.id]?.numberOfBids || 0;
+          const bBids = (stats[b.id]?.numberOfBids === "You're the 1st bid") ? 0 : stats[b.id]?.numberOfBids || 0;
+        
+          return bBids - aBids; // Descending order
         });
-        setGraphData(response.data.binned_data);
-        setStatData(response.data.stats);
+        
+        // Set the sorted data and other stats
+        setData(sortedPlayers);
+        setGraphData(statsResponse.data.binned_data);
+        setStatData(stats);
+  
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
         setLoading(false); // Set loading to false after data is fetched
       }
     };
-    const fetchTargets = async () => {
-      try {
-        const response = await axios.get(`${apiUrl}/targets`, {
-          params: { week }
-        });
-        const sortedPlayers = response.data.players.sort((a, b) => a.target_id - b.target_id);
-        setData(sortedPlayers);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        fetchStats(); // Set loading to false after data is fetched
-      }
-    };
-    fetchTargets();
+  
+    fetchData();
   }, [week]);
+  
+  
 
   const getPlaceholderText = () => {
     return week === 1000 ? 'Your Auction bid out of $200' : '% of initial FAAB';
