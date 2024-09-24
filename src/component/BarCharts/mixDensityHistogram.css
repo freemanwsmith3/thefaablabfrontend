@@ -1,0 +1,24 @@
+.bid-density-histogram-container {
+  width: 100%;
+  text-align: center;
+}
+
+.bid-heatmap-title {
+  margin-bottom: 20px;
+}
+
+.bid-cards-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.bid-card {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+svg {
+  margin-top: 20px;
+}
