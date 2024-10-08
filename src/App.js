@@ -16,7 +16,7 @@ function App() {
     logPageView();
   }, []);
 
-  const [curWk, setCurWk] = useState(32);
+  const [curWk, setCurWk] = useState(33);
 
   return (
     <div className="">
