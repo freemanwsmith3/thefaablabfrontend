@@ -220,3 +220,12 @@
     line-height: 48px; /* Adjust line height accordingly */
   }
 }
+.homeCard h4 {
+  text-align: center;
+  color: #035E7B;
+  font-size: 24px; /* Adjusted to half the size of h3 (49px to ~24px) */
+  line-height: 40px; /* Increased for better spacing */
+  font-weight: 400;
+  font-family: 'poppins';
+}
+
