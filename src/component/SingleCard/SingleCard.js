@@ -70,13 +70,19 @@ const SingleCard = ({ week }) => {
   
         const players = targetsResponse.data.players;
         const stats = statsResponse.data.stats;
-
-        // Sort players based on the numberOfBids in the stats
+  
+        // Sort players first by numberOfBids, then by target_id
         const sortedPlayers = players.sort((a, b) => {
           const aBids = (stats[a.id]?.numberOfBids === "You're the 1st bid") ? 0 : stats[a.id]?.numberOfBids || 0;
           const bBids = (stats[b.id]?.numberOfBids === "You're the 1st bid") ? 0 : stats[b.id]?.numberOfBids || 0;
-        
-          return bBids - aBids; // Descending order
+          
+          // First sort by numberOfBids (descending)
+          if (aBids !== bBids) {
+            return bBids - aBids;
+          }
+          
+          // If numberOfBids are equal, sort by target_id (ascending)
+          return a.target_id - b.target_id;
         });
         
         // Set the sorted data and other stats
@@ -97,7 +103,7 @@ const SingleCard = ({ week }) => {
   
 
   const getPlaceholderText = () => {
-    return week === 1000 ? 'Your Auction bid out of $200' : '% of initial FAAB';
+    return week % 1000 == 0 ? 'Your Auction bid out of $200' : '% of initial FAAB';
   };
 
   const showModal = () => {
@@ -126,7 +132,7 @@ const SingleCard = ({ week }) => {
       </div>
       
       {/* Conditionally render the correct modal component */}
-      {week === 1000 ? (
+      {week % 1000 == 0 ? (
         <HowItWorksAuction isVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />
       ) : (
         <HowItWorkModal isVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />

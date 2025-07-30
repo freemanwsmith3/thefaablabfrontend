@@ -10,7 +10,7 @@ function Home({ curWk }) {
   return (
     <div className='faab-container'>
       <div className='homeCard'>
-        <h4>FAABLab is done for 2024, see you in 2025</h4>
+        <h3>Week {week - 40}</h3>
         <SingleCard week={week} />
       </div>
     </div>
