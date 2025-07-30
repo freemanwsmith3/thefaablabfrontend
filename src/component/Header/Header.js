@@ -13,8 +13,11 @@ import logo from '../../assets/svg/logo.svg';
 import Typography from '@mui/material/Typography';
 
 const navItems = [
-  { name: 'This Week', path: '/' },
+  // { name: 'This Week', path: '/' },
   { name: 'Rankings', path: '/rankings' },
+  { name: 'Auction', path: '/auction' },
+  { name: 'Last Year', path: '/history' },
+  // { name: 'Previous Weeks', path: '/history' }, make this point to the ThisYear.js 
   { name: 'About', path: '/about' },
 ];
 

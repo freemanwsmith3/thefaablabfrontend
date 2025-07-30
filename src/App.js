@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Route, Routes } from "react-router-dom";
 import Header from "./component/Header/Header";
 import Home from "./pages/Home"; // Import the separate HomeWithWk component
+import History from "./component/History/History"; // Add this import
 import FantasyProsWidget from "./component/FantasyPros/FantasyProsWidget";
 import Footer from "./component/Footer/Footer";
 import HowItWork from "./pages/HowItWork";
 import FAQS from "./component/FAQ/FAQS";
 import About from "./pages/About";
 import Auction from "./pages/Auction";
+import ThisYear from "./component/History/ThisYear"
 import { initGA, logPageView } from './analytics';
 
 function App() {
@@ -22,8 +24,12 @@ function App() {
     <div className="">
       <Header currentWk={curWk} />
       <Routes>
-        <Route exact path="/" element={<Home curWk={curWk} />} />
+        {/* <Route exact path="/" element={<Home curWk={curWk} />} /> */}
+        <Route exact path="/" element={<Auction />} />
         <Route path="/auction" element={<Auction />} />
+        <Route path="/demo" element={<Home curWk={30} />} />
+        <Route path="/history" element={<History />} />
+        <Route path="/thisyear" element={<ThisYear />} />
         <Route path="/history/:wk" element={<Home curWk={curWk} />} />
         <Route path="/rankings" element={<FantasyProsWidget />} />
         <Route path="/howitwork" element={<HowItWork />} />
