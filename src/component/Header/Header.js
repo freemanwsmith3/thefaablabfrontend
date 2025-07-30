@@ -14,10 +14,10 @@ import Typography from '@mui/material/Typography';
 
 const navItems = [
   // { name: 'This Week', path: '/' },
-  { name: 'Rankings', path: '/rankings' },
   { name: 'Auction', path: '/auction' },
+  { name: 'Rankings', path: '/rankings' },
   { name: 'Last Year', path: '/history' },
-  // { name: 'Previous Weeks', path: '/history' }, make this point to the ThisYear.js 
+  // { name: 'Previous Weeks', path: '/thisyear' }, make this point to the ThisYear.js 
   { name: 'About', path: '/about' },
 ];
 
