@@ -10,7 +10,7 @@ function Home({ curWk }) {
   return (
     <div className='faab-container'>
       <div className='homeCard'>
-        <h3>Week {week - 27}</h3>
+        <h3>Week {week - 40}</h3>
         <SingleCard week={week} />
       </div>
     </div>
