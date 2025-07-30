@@ -1,10 +1,14 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import SingleCard from '../component/SingleCard/SingleCard';
 
 function Home({ curWk }) {
   const { wk: urlWk } = useParams(); // Get 'wk' from URL parameters
+  const location = useLocation(); // Get current location
   const week = urlWk ? parseInt(urlWk, 10) : curWk; // Use URL 'wk' if available, otherwise use curWk
+  
+  // Check if current path is /demo
+  const isDemo = location.pathname === '/demo';
 
   // Calculate year and display week based on the week number
   const getYearAndWeek = (weekNumber) => {
@@ -48,7 +52,8 @@ function Home({ curWk }) {
     <div className='faab-container'>
       <div className='homeCard'>
         <h3>Week {displayWeek}, {year}</h3>
-        <SingleCard week={week} />
+        {/* Pass curWk and isDemo as props to SingleCard */}
+        <SingleCard week={week} curWk={curWk} isDemo={isDemo} />
       </div>
     </div>
   );

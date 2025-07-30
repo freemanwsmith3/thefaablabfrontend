@@ -7,7 +7,7 @@ import HowItWorkModal from './HowItWorkModal'; // Import the standard modal comp
 import HowItWorksAuction from './HowItWorksAuction'; // Import the auction modal component
 import './singleCard.css'; // Import the CSS file
 
-const SingleCard = ({ week }) => {
+const SingleCard = ({ week, curWk, isDemo }) => { // Add curWk and isDemo as props
   const [clickedIndex, setClickedIndex] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true); // State to manage loading
@@ -19,6 +19,9 @@ const SingleCard = ({ week }) => {
   const [positionFilter, setPositionFilter] = useState(''); // State for position filter
   //const apiUrl = 'http://127.0.0.1:8000/api';
   const apiUrl = 'https://faablab.herokuapp.com/api';
+
+  // Check if current week is in the past, but ignore this check if it's demo mode
+  const isPastWeek = !isDemo && week < curWk;
 
   const onChange = (value) => {
     setBidValue(value);
@@ -164,22 +167,6 @@ const SingleCard = ({ week }) => {
       <div className="singleCard">
         {filteredData.map((item, index) => (
           <React.Fragment key={index}>
-            {/* {((index === 2) || (index % 8 === 0 && index !== 0)) && (
-                <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  
-                }}>
-                <a href="https://446ed-g0ded8ibu4-5tpk732eo.hop.clickbank.net/?&traffic_source=blog&traffic_type=organic" target="_blank" rel="noopener noreferrer">
-                  <img
-                    src="https://www.draftdashboard.com/creatives/creative300anim.gif"
-                    alt="Advertisement"
-                  />
-                </a>
-              </div>
-            )} */}
             {index % 4 === 0 && index !== 0 && index % 8 !== 0  && (
                 <div
                 style={{
@@ -198,7 +185,8 @@ const SingleCard = ({ week }) => {
             </div>
             )}
             <div className="mainCard">
-              {clickedIndex.includes(item.target_id) ? (
+              {/* Updated condition: show results if it's a past week OR if user has clicked */}
+              {isPastWeek || clickedIndex.includes(item.target_id) ? (
                 <div>
                   {loading ? (
                     <CircularProgress />
