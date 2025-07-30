@@ -1,0 +1,21 @@
+{
+    "routes": [
+      {
+        "route": "/rankings",
+        "serve": "/index.html"
+      },
+      {
+        "route": "/about",
+        "serve": "/index.html"
+      }
+    ],
+    "navigationFallback": {
+      "rewrite": "/index.html"
+    },
+    "platformErrorOverrides": [
+      {
+        "errorType": "NotFound",
+        "serve": "/index.html"
+      }
+    ]
+  }
