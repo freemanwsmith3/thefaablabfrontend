@@ -19,14 +19,14 @@ const FantasyProsWidget = () => {
         data-thead_font="#000000"
         data-t_alt_row="#fafafa"
         data-link_color="#3778be"
-        data-pill_color="#035E7B"
+        data-pill_color="#2881eb"
         data-sport="NFL"
         data-wtype="preseason"
         data-filters=""
         data-scoring="HALF"
         data-expert="6564"
         data-affiliate_code=""
-        data-year="2024"
+        data-year="2025"
         data-week="0"
         data-auction="false"
         data-Notes="false"
@@ -35,7 +35,7 @@ const FantasyProsWidget = () => {
         data-showPodcastIcons="false"
         data-format="table"
         data-promo_link="true"
-        data-title_header="false"
+        data-title_header="true"
         data-positions="ALL:QB:RB:WR:TE:OP"
         data-ppr_positions="ALL:RB:WR:TE:OP"
         data-half_positions="ALL:RB:WR:TE:OP"
@@ -52,7 +52,7 @@ const FantasyProsWidget = () => {
             target="_blank"
             rel="nofollow"
           >
-            2024 Fantasy Football Rankings
+            2025 Fantasy Football Rankings
           </a>{' '}
           powered by FantasyPros
         </span>
