@@ -17,6 +17,7 @@ const HowItWorkModal = ({ isVisible, handleOk, handleCancel }) => {
         <li><CheckOutlined style={{paddingRight:'10px',color:'#035E7B'}}/> Zero % bids will not be stored, but will allow you to see the data
         </li>
         <li><CheckOutlined style={{paddingRight:'10px',color:'#035E7B'}}/> After submission, the consensus data will be shown to you</li>
+        <li><CheckOutlined style={{paddingRight:'10px',color:'#035E7B'}}/> Use Acquire Probability slider = % of historical bids below your amount (e.g., if 70% of people bid less than 25%, then bidding 25% gives 70% win chance)</li>
         <li><CheckOutlined style={{paddingRight:'10px',color:'#035E7B'}}/> Use the crowdsourced data to get an edge in your league</li>
       </div>
     </Modal>

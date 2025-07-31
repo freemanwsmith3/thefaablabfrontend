@@ -283,7 +283,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
         margin: '15px 0'
       }}>
         <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>
-          TOTAL BIDS
+          TOTAL HISTORICAL BIDS
         </div>
         <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#334155' }}>
           {totalBids.toLocaleString()}
@@ -291,22 +291,28 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
       </div>
 
       {/* Clean mobile chart with Y-axis and labeled bars */}
-      <ResponsiveContainer width="100%" height={250}>
+      <ResponsiveContainer width="100%" height={270}>
         <BarChart 
           data={processedData} 
-          margin={{ top: 10, right: 5, left: 20, bottom: 35 }}
+          margin={{ top: 10, right: 5, left: 20, bottom: 55 }}
         >
           <XAxis 
             dataKey="label" 
             tick={{ fontSize: 11, fill: '#374151' }}
             axisLine={false}
             tickLine={false}
+            label={{ 
+              value: 'Bid Range (%)', 
+              position: 'insideBottom', 
+              offset: -10,
+              style: { textAnchor: 'middle', fontSize: '12px', fill: '#6b7280' }
+            }}
           />
           <YAxis 
             tick={{ fontSize: 10, fill: '#6b7280' }}
             axisLine={false}
             tickLine={false}
-            width={35}
+            width={20}
           />
           <Bar 
             dataKey="bids" 
