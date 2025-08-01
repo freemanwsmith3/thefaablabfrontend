@@ -1,20 +1,32 @@
 import React, { useMemo, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Tooltip, Cell, CartesianGrid } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
+import { convertBidRangeData, convertFromBaseline } from '../../utils/conversionUtils';
 import './barCharts.css';
 
-const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) => {
+const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leagueSettings, isAuctionWeek }) => {
   const labelColors = ['#002E2C', '#035E7B'];
   const { averageBid, medianBid, mostCommonBid, numberOfBids } = statData;
 
+  // Convert graph data based on league settings for auction weeks
+  const convertedGraphData = useMemo(() => {
+    if (!isAuctionWeek || !leagueSettings) {
+      return graphData; // No conversion needed for FAAB weeks
+    }
+    return convertBidRangeData(graphData, leagueSettings, playerPos);
+  }, [graphData, leagueSettings, playerPos, isAuctionWeek]);
+
   // Enhanced data processing with simplified 3-tier strategy
   const processedData = useMemo(() => {
-    if (!graphData) return [];
+    if (!convertedGraphData) return [];
     
-    const totalBids = graphData.reduce((sum, item) => sum + item.bids, 0);
+    const totalBids = convertedGraphData.reduce((sum, item) => sum + item.bids, 0);
     let cumulativeBidsBelow = 0;
     
-    const dataWithProbabilities = graphData.map((item, index) => {
-      const [min, max] = item.label.split(' - ').map(num => parseInt(num.trim()));
+    const dataWithProbabilities = convertedGraphData.map((item, index) => {
+      // For auction weeks, use converted ranges; for FAAB, use original
+      const [min, max] = isAuctionWeek && item.convertedMin !== undefined 
+        ? [item.convertedMin, item.convertedMax]
+        : item.label.split(' - ').map(num => parseInt(num.trim()));
       
       // Calculate win probability (percentage of bids BELOW this range)
       const winProbability = totalBids > 0 ? (cumulativeBidsBelow / totalBids) * 100 : 0;
@@ -32,7 +44,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
       };
     });
 
-    // First pass: assign strategies based on win probability
+    // Strategy assignment logic
     const dataWithStrategies = dataWithProbabilities.map(item => {
       let strategy;
       if (item.winProbability < 50) {
@@ -46,12 +58,10 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
       return { ...item, strategy };
     });
 
-    // Check if there's at least one "Recommended" bar
+    // Ensure at least one "Recommended" bar exists
     const hasRecommended = dataWithStrategies.some(item => item.strategy === 'Recommended');
     
     if (!hasRecommended) {
-      // Force at least one bar to be "Recommended"
-      // Find the bar closest to 65% win probability (middle of 50-80 range)
       let closestIndex = 0;
       let closestDiff = Math.abs(dataWithStrategies[0].winProbability - 65);
       
@@ -63,14 +73,13 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
         }
       }
       
-      // Force this bar to be "Recommended"
       dataWithStrategies[closestIndex].strategy = 'Recommended';
     }
 
     return dataWithStrategies;
-  }, [graphData]);
+  }, [convertedGraphData, isAuctionWeek]);
 
-  // Calculate win probability for any bid amount
+  // Calculate win probability for any bid amount (in user's format)
   const calculateWinProbability = (bidAmount) => {
     if (!processedData.length) return 1;
     
@@ -81,7 +90,6 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
       if (item.max <= bidAmount) {
         totalBidsBelow += item.bids;
       } else if (item.min < bidAmount && bidAmount < item.max) {
-        // Interpolate within the range
         const rangeProgress = (bidAmount - item.min) / (item.max - item.min);
         totalBidsBelow += item.bids * rangeProgress;
       }
@@ -94,20 +102,21 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
   const getSliderRange = () => {
     if (!processedData.length) return { min: 1, max: 100 };
     
-    let minBid = 1; // Minimum bid that gives >1% win chance
-    let maxBid = 100; // Maximum bid that gives <99% win chance
+    const maxBudget = isAuctionWeek ? leagueSettings?.budget || 200 : 100;
+    let minBid = 1;
+    let maxBid = maxBudget;
     
-    // Find MAXIMUM bid that gives AT MOST 1% win chance (anything higher gives >1%)
-    for (let bid = 100; bid >= 1; bid--) {
+    // Find minimum bid that gives >1% win chance
+    for (let bid = maxBudget; bid >= 1; bid--) {
       const winProb = calculateWinProbability(bid);
       if (winProb <= 1) {
-        minBid = bid + 1; // Add 1 to get the first bid that gives >1%
+        minBid = bid + 1;
         break;
       }
     }
     
-    // Find MINIMUM bid that gives AT LEAST 99% win chance
-    for (let bid = 1; bid <= 100; bid++) {
+    // Find minimum bid that gives ≥99% win chance
+    for (let bid = 1; bid <= maxBudget; bid++) {
       const winProb = calculateWinProbability(bid);
       if (winProb >= 99) {
         maxBid = bid;
@@ -115,10 +124,9 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
       }
     }
     
-    // Ensure valid range
     if (minBid >= maxBid) {
       minBid = 1;
-      maxBid = 100;
+      maxBid = maxBudget;
     }
     
     return { min: minBid, max: maxBid };
@@ -126,11 +134,10 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
 
   const sliderRange = getSliderRange();
 
-  // Get bid amount that gives ~50% win probability (within slider range)
+  // Get bid amount that gives ~50% win probability
   const get50PercentBid = () => {
     if (!processedData.length) return 50;
     
-    // Find the first bid that gives 50% or higher win probability
     for (let bid = sliderRange.min; bid <= sliderRange.max; bid++) {
       const winProb = calculateWinProbability(bid);
       if (winProb >= 50) {
@@ -138,7 +145,6 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
       }
     }
     
-    // Fallback to middle of slider range if no bid gives 50%+
     return Math.round((sliderRange.min + sliderRange.max) / 2);
   };
 
@@ -188,22 +194,48 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
     );
   };
 
+  // Convert stats for display (only for auction weeks)
+  const displayStats = useMemo(() => {
+    if (!isAuctionWeek || !leagueSettings) {
+      return { averageBid, medianBid, mostCommonBid }; // No conversion for FAAB
+    }
+    
+    return {
+      averageBid: convertFromBaseline(averageBid, leagueSettings, playerPos),
+      medianBid: convertFromBaseline(medianBid, leagueSettings, playerPos),
+      mostCommonBid: convertFromBaseline(mostCommonBid, leagueSettings, playerPos)
+    };
+  }, [averageBid, medianBid, mostCommonBid, isAuctionWeek, leagueSettings, playerPos]);
+
+  // Get currency symbol and format
+  const formatBidAmount = (amount) => {
+    if (isAuctionWeek) {
+      return `${amount}`;
+    }
+    return `${amount}%`;
+  };
+
+  const getXAxisLabel = () => {
+    if (isAuctionWeek) {
+      return `Bid Amount ($)`;
+    }
+    return 'Bid Range (%)';
+  };
+
   return (
     <div className="bid-chart-container">
-      <div className="bid-chart-title">
-        <h2 className="playerName">{playerName}</h2>
-        <h3 className="playerTitle">{playerPos} - {playerTeam}</h3>
-      </div>
+      <div className="playerTitle">{playerName}</div>
+      <div className="playerTeam">{playerPos} - {playerTeam}</div>
 
       {/* Interactive bid slider */}
       <div style={{
         padding: '20px',
-        backgroundColor: '#f0fdf4',
-        border: '2px solid #22c55e',
+        backgroundColor: '#f8fafc',
+        border: '2px solid #035E7B',
         borderRadius: '12px',
-        margin: '15px 0'
+        margin: '15px 5px'
       }}>
-        <div style={{ fontSize: '14px', color: '#166534', fontWeight: '600', marginBottom: '12px', textAlign: 'center' }}>
+        <div style={{ fontSize: '14px', color: '#035E7B', fontWeight: '600', marginBottom: '12px', textAlign: 'center' }}>
           🎯 BID CALCULATOR
         </div>
         
@@ -231,7 +263,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
               width: 20px;
               height: 20px;
               border-radius: 50%;
-              background: #22c55e;
+              background: #035E7B;
               cursor: pointer;
               border: 2px solid white;
               box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -240,7 +272,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
               width: 20px;
               height: 20px;
               border-radius: 50%;
-              background: #22c55e;
+              background: #035E7B;
               cursor: pointer;
               border: 2px solid white;
               box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -255,19 +287,24 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
           alignItems: 'center'
         }}>
           <div>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#15803d' }}>
-              {sliderValue}%
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#035E7B' }}>
+              {formatBidAmount(sliderValue)}
             </div>
-            <div style={{ fontSize: '11px', color: '#166534' }}>
-              Your bid amount
+            <div style={{ fontSize: '11px', color: '#035E7Bad' }}>
+              Bid amount
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#15803d' }}>
+            <div style={{ 
+              fontSize: '24px', 
+              fontWeight: 'bold', 
+              color: currentWinProbability < 50 ? '#ef4444' : 
+                     currentWinProbability < 80 ? '#10b981' : '#3b82f6'
+            }}>
               {currentWinProbability}%
             </div>
-            <div style={{ fontSize: '11px', color: '#166534' }}>
-              Win probability
+            <div style={{ fontSize: '11px', color: '#035E7Bad' }}>
+              Acquire probability
             </div>
           </div>
         </div>
@@ -302,7 +339,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
             axisLine={false}
             tickLine={false}
             label={{ 
-              value: 'Bid Range (%)', 
+              value: getXAxisLabel(), 
               position: 'insideBottom', 
               offset: -10,
               style: { textAnchor: 'middle', fontSize: '12px', fill: '#6b7280' }
@@ -352,6 +389,22 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData }) =>
           <span>Safe</span>
         </div>
       </div>
+
+      {/* Show conversion note for auction weeks */}
+      {isAuctionWeek && leagueSettings && (
+        <div style={{
+          fontSize: '10px',
+          color: '#64748b',
+          textAlign: 'center',
+          padding: '8px',
+          backgroundColor: '#f1f5f9',
+          borderRadius: '6px',
+          border: '1px solid #e2e8f0',
+          margin: '10px 0'
+        }}>
+          💡 Data converted from 12-team Half-PPR $200 baseline to your league format
+        </div>
+      )}
     </div>
   );
 };
