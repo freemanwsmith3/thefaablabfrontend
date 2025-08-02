@@ -19,9 +19,10 @@ const SingleCard = ({ week, curWk, isDemo }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
-  const [showLeagueSettings, setShowLeagueSettings] = useState(false);
+  const [leagueSettingsRef, setLeagueSettingsRef] = useState(null);
+  const [hasScrolledPast, setHasScrolledPast] = useState(false);
   
-  // League settings state with defaults
+  // League settings state with 12 teams as default
   const [leagueSettings, setLeagueSettings] = useState(() => {
     const saved = localStorage.getItem('leagueSettings');
     if (saved) {
@@ -29,11 +30,28 @@ const SingleCard = ({ week, curWk, isDemo }) => {
     }
     return {
       teamCount: 12,
-      scoring: 'half-ppr',
-      budget: 200,
-      leagueType: 'redraft',
-      isSuperflex: false
+      scoring: null,
+      budget: null,
+      isSuperflex: null
     };
+  });
+
+  // Track if settings box should be open - defaults to true for auction weeks
+  const [showLeagueSettings, setShowLeagueSettings] = useState(() => {
+    const isAuctionWeek = week % 1000 === 0;
+    if (!isAuctionWeek) return false;
+    
+    const saved = localStorage.getItem('leagueSettings');
+    if (saved) {
+      const settings = JSON.parse(saved);
+      // If all settings are configured, start closed
+      return !(settings.teamCount !== null && 
+               settings.scoring !== null && 
+               settings.budget !== null && 
+               settings.isSuperflex !== null);
+    }
+    // If no saved settings, start open
+    return true;
   });
 
   const apiUrl = 'https://faablab.herokuapp.com/api';
@@ -45,17 +63,46 @@ const SingleCard = ({ week, curWk, isDemo }) => {
     localStorage.setItem('leagueSettings', JSON.stringify(leagueSettings));
   }, [leagueSettings]);
 
-  // Check if settings have been configured
-  const areSettingsConfigured = () => {
-    const defaultSettings = {
-      teamCount: 12,
-      scoring: 'half-ppr',
-      budget: 200,
-      leagueType: 'redraft',
-      isSuperflex: false
-    };
-    return JSON.stringify(leagueSettings) !== JSON.stringify(defaultSettings);
+  // Check if all settings have been configured
+  const areAllSettingsSelected = () => {
+    return leagueSettings.teamCount !== null &&
+           leagueSettings.scoring !== null &&
+           leagueSettings.budget !== null &&
+           leagueSettings.isSuperflex !== null;
   };
+
+  // Auto-close when all settings are selected
+  useEffect(() => {
+    if (areAllSettingsSelected() && showLeagueSettings) {
+      setTimeout(() => {
+        setShowLeagueSettings(false);
+        setHasScrolledPast(true);
+      }, 800);
+    }
+  }, [leagueSettings, showLeagueSettings]);
+
+  // Check if settings have been configured (for compact display)
+  const areSettingsConfigured = () => {
+    return areAllSettingsSelected();
+  };
+
+  // Scroll listener - only collapses when scrolled past, doesn't auto-expand
+  useEffect(() => {
+    if (!isAuctionWeek || !leagueSettingsRef || !areSettingsConfigured()) return;
+
+    const handleScroll = () => {
+      const rect = leagueSettingsRef.getBoundingClientRect();
+      const isScrolledPast = rect.bottom < 100;
+      
+      if (isScrolledPast && showLeagueSettings && !hasScrolledPast) {
+        setShowLeagueSettings(false);
+        setHasScrolledPast(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isAuctionWeek, leagueSettingsRef, showLeagueSettings, hasScrolledPast, areSettingsConfigured]);
 
   const onChange = (value) => {
     setBidValue(value);
@@ -157,17 +204,55 @@ const SingleCard = ({ week, curWk, isDemo }) => {
     return matchesSearch && matchesPosition;
   });
 
+  // Helper functions for display
+  const getScoringDisplay = () => {
+    if (leagueSettings.scoring === 'standard') return 'Standard';
+    if (leagueSettings.scoring === 'half-ppr') return 'Half PPR';
+    if (leagueSettings.scoring === 'full-ppr') return 'Full PPR';
+    return '?';
+  };
+
+  const getSuperlexDisplay = () => {
+    if (leagueSettings.isSuperflex === true) return ' • Superflex';
+    if (leagueSettings.isSuperflex === null) return ' • ?QB';
+    return '';
+  };
+
+  const getLeagueDisplayText = () => {
+    const teamText = leagueSettings.teamCount || '?';
+    const budgetText = leagueSettings.budget || '?';
+    const scoringText = getScoringDisplay();
+    const superflexText = getSuperlexDisplay();
+    
+    return `${teamText} teams • ${scoringText} • $${budgetText} budget${superflexText}`;
+  };
+
+  const getProgressText = () => {
+    const selectedCount = [leagueSettings.teamCount, leagueSettings.scoring, leagueSettings.budget, leagueSettings.isSuperflex].filter(s => s !== null).length;
+    const remaining = 4 - selectedCount;
+    
+    if (remaining === 0) {
+      return 'Data converted from 12-team Half-PPR $200 baseline';
+    }
+    return `${remaining} more selection${remaining === 1 ? '' : 's'} needed`;
+  };
+
   return (
     <div className="singleCardContainer">
       <div className="buttonContainer">
         <button onClick={showModal} className="modalButton">How It Works</button>
       </div>
 
-      {/* League Settings - Simple Mobile UX */}
       {isAuctionWeek && (
-        <div style={{ maxWidth: '600px', margin: '0 auto 20px auto' }}>
+        <div 
+          ref={setLeagueSettingsRef}
+          style={{ 
+            maxWidth: '600px', 
+            margin: '0 auto 20px auto',
+            padding: '0 16px' // Add horizontal padding for mobile spacing
+          }}
+        >
           
-          {/* Compact Settings Summary */}
           {areSettingsConfigured() && !showLeagueSettings && (
             <div style={{
               padding: '16px 20px',
@@ -176,21 +261,26 @@ const SingleCard = ({ week, curWk, isDemo }) => {
               borderRadius: '12px',
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center'
+              alignItems: 'flex-start', // Changed from center to flex-start
+              gap: '12px' // Add gap to prevent overlap
             }}>
-              <div>
+              <div style={{ flex: 1, minWidth: 0 }}> {/* Allow text to shrink */}
                 <div style={{ fontSize: '14px', color: '#035E7B', fontWeight: '600', marginBottom: '4px' }}>
                   Your League Format
                 </div>
-                <div style={{ fontSize: '13px', color: '#64748b' }}>
-                  {leagueSettings.teamCount} teams • {
-                    leagueSettings.scoring === 'standard' ? 'Standard' :
-                    leagueSettings.scoring === 'half-ppr' ? 'Half PPR' : 'Full PPR'
-                  } • ${leagueSettings.budget} budget{leagueSettings.isSuperflex ? ' • Superflex' : ''}
+                <div style={{ 
+                  fontSize: '13px', 
+                  color: '#64748b',
+                  wordBreak: 'break-word' // Prevent text overflow
+                }}>
+                  {getLeagueDisplayText()}
                 </div>
               </div>
               <button
-                onClick={() => setShowLeagueSettings(true)}
+                onClick={() => {
+                  setShowLeagueSettings(true);
+                  setHasScrolledPast(false);
+                }}
                 style={{
                   padding: '8px 16px',
                   backgroundColor: '#035E7B',
@@ -202,7 +292,9 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                   fontWeight: '500',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  flexShrink: 0, // Prevent button from shrinking
+                  whiteSpace: 'nowrap' // Keep button text on one line
                 }}
               >
                 <SettingOutlined />
@@ -211,8 +303,7 @@ const SingleCard = ({ week, curWk, isDemo }) => {
             </div>
           )}
 
-          {/* Full Settings Panel */}
-          {(!areSettingsConfigured() || showLeagueSettings) && (
+          {(!areAllSettingsSelected() || showLeagueSettings) && (
             <div style={{
               padding: '20px',
               backgroundColor: '#f8fafc',
@@ -236,7 +327,6 @@ const SingleCard = ({ week, curWk, isDemo }) => {
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 
-                {/* Team Count */}
                 <div>
                   <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
                     Team Count
@@ -245,13 +335,7 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     {[8, 10, 12, 14, 16].map(count => (
                       <button
                         key={count}
-                        onClick={() => {
-                          setLeagueSettings(prev => ({ ...prev, teamCount: count }));
-                          // Auto-collapse after any setting change (for mobile UX)
-                          if (areSettingsConfigured()) {
-                            setTimeout(() => setShowLeagueSettings(false), 500);
-                          }
-                        }}
+                        onClick={() => setLeagueSettings(prev => ({ ...prev, teamCount: count }))}
                         style={{
                           padding: '8px 16px',
                           border: `2px solid ${leagueSettings.teamCount === count ? '#035E7B' : '#d1d5db'}`,
@@ -269,7 +353,6 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                   </div>
                 </div>
 
-                {/* Scoring System */}
                 <div>
                   <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
                     Scoring System
@@ -282,12 +365,7 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     ].map(scoring => (
                       <button
                         key={scoring.value}
-                        onClick={() => {
-                          setLeagueSettings(prev => ({ ...prev, scoring: scoring.value }));
-                          if (areSettingsConfigured()) {
-                            setTimeout(() => setShowLeagueSettings(false), 500);
-                          }
-                        }}
+                        onClick={() => setLeagueSettings(prev => ({ ...prev, scoring: scoring.value }))}
                         style={{
                           padding: '8px 16px',
                           border: `2px solid ${leagueSettings.scoring === scoring.value ? '#035E7B' : '#d1d5db'}`,
@@ -305,7 +383,6 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                   </div>
                 </div>
 
-                {/* Budget */}
                 <div>
                   <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
                     Auction Budget
@@ -314,12 +391,7 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     {[100, 200, 300].map(budget => (
                       <button
                         key={budget}
-                        onClick={() => {
-                          setLeagueSettings(prev => ({ ...prev, budget }));
-                          if (areSettingsConfigured()) {
-                            setTimeout(() => setShowLeagueSettings(false), 500);
-                          }
-                        }}
+                        onClick={() => setLeagueSettings(prev => ({ ...prev, budget }))}
                         style={{
                           padding: '8px 16px',
                           border: `2px solid ${leagueSettings.budget === budget ? '#035E7B' : '#d1d5db'}`,
@@ -344,12 +416,12 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                         max={500}
                         step={25}
                         size="small"
+                        placeholder="$"
                       />
                     </div>
                   </div>
                 </div>
 
-                {/* QB Format */}
                 <div>
                   <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
                     Quarterback Format
@@ -361,12 +433,7 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     ].map(qb => (
                       <button
                         key={qb.value.toString()}
-                        onClick={() => {
-                          setLeagueSettings(prev => ({ ...prev, isSuperflex: qb.value }));
-                          if (areSettingsConfigured()) {
-                            setTimeout(() => setShowLeagueSettings(false), 500);
-                          }
-                        }}
+                        onClick={() => setLeagueSettings(prev => ({ ...prev, isSuperflex: qb.value }))}
                         style={{
                           padding: '8px 16px',
                           border: `2px solid ${leagueSettings.isSuperflex === qb.value ? '#035E7B' : '#d1d5db'}`,
@@ -384,7 +451,6 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                   </div>
                 </div>
 
-                {/* Current Format Display */}
                 <div style={{ 
                   padding: '12px', 
                   backgroundColor: 'white', 
@@ -396,13 +462,10 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     YOUR LEAGUE FORMAT
                   </div>
                   <div style={{ fontSize: '13px', color: '#035E7B', fontWeight: '600' }}>
-                    {leagueSettings.teamCount} teams • {
-                      leagueSettings.scoring === 'standard' ? 'Standard' :
-                      leagueSettings.scoring === 'half-ppr' ? 'Half PPR' : 'Full PPR'
-                    } • ${leagueSettings.budget} budget{leagueSettings.isSuperflex ? ' • Superflex' : ''}
+                    {getLeagueDisplayText()}
                   </div>
                   <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-                    Data converted from 12-team Half-PPR $200 baseline
+                    {getProgressText()}
                   </div>
                 </div>
 
@@ -412,14 +475,12 @@ const SingleCard = ({ week, curWk, isDemo }) => {
         </div>
       )}
       
-      {/* Modals */}
       {isAuctionWeek ? (
         <HowItWorksAuction isVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />
       ) : (
         <HowItWorkModal isVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />
       )}
       
-      {/* Search and filter controls */}
       <div className="filterContainer">
         <Input 
           placeholder="Search by player name" 
