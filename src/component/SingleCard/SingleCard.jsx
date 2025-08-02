@@ -20,7 +20,6 @@ const SingleCard = ({ week, curWk, isDemo }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
   const [showLeagueSettings, setShowLeagueSettings] = useState(false);
-  const [leagueSettingsRef, setLeagueSettingsRef] = useState(null);
   
   // League settings state with defaults
   const [leagueSettings, setLeagueSettings] = useState(() => {
@@ -57,27 +56,6 @@ const SingleCard = ({ week, curWk, isDemo }) => {
     };
     return JSON.stringify(leagueSettings) !== JSON.stringify(defaultSettings);
   };
-
-  // Scroll listener for auto-hide/show
-  useEffect(() => {
-    if (!isAuctionWeek || !leagueSettingsRef) return;
-
-    const handleScroll = () => {
-      const rect = leagueSettingsRef.getBoundingClientRect();
-      const isScrolledPast = rect.bottom < 100;
-      
-      if (areSettingsConfigured()) {
-        if (isScrolledPast && showLeagueSettings) {
-          setShowLeagueSettings(false);
-        } else if (!isScrolledPast && !showLeagueSettings) {
-          setShowLeagueSettings(true);
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isAuctionWeek, leagueSettingsRef, showLeagueSettings, areSettingsConfigured]);
 
   const onChange = (value) => {
     setBidValue(value);
@@ -185,12 +163,9 @@ const SingleCard = ({ week, curWk, isDemo }) => {
         <button onClick={showModal} className="modalButton">How It Works</button>
       </div>
 
-      {/* League Settings with Scroll Behavior */}
+      {/* League Settings - Simple Mobile UX */}
       {isAuctionWeek && (
-        <div 
-          ref={setLeagueSettingsRef}
-          style={{ maxWidth: '600px', margin: '0 auto 20px auto' }}
-        >
+        <div style={{ maxWidth: '600px', margin: '0 auto 20px auto' }}>
           
           {/* Compact Settings Summary */}
           {areSettingsConfigured() && !showLeagueSettings && (
@@ -270,7 +245,13 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     {[8, 10, 12, 14, 16].map(count => (
                       <button
                         key={count}
-                        onClick={() => setLeagueSettings(prev => ({ ...prev, teamCount: count }))}
+                        onClick={() => {
+                          setLeagueSettings(prev => ({ ...prev, teamCount: count }));
+                          // Auto-collapse after any setting change (for mobile UX)
+                          if (areSettingsConfigured()) {
+                            setTimeout(() => setShowLeagueSettings(false), 500);
+                          }
+                        }}
                         style={{
                           padding: '8px 16px',
                           border: `2px solid ${leagueSettings.teamCount === count ? '#035E7B' : '#d1d5db'}`,
@@ -301,7 +282,12 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     ].map(scoring => (
                       <button
                         key={scoring.value}
-                        onClick={() => setLeagueSettings(prev => ({ ...prev, scoring: scoring.value }))}
+                        onClick={() => {
+                          setLeagueSettings(prev => ({ ...prev, scoring: scoring.value }));
+                          if (areSettingsConfigured()) {
+                            setTimeout(() => setShowLeagueSettings(false), 500);
+                          }
+                        }}
                         style={{
                           padding: '8px 16px',
                           border: `2px solid ${leagueSettings.scoring === scoring.value ? '#035E7B' : '#d1d5db'}`,
@@ -328,7 +314,12 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     {[100, 200, 300].map(budget => (
                       <button
                         key={budget}
-                        onClick={() => setLeagueSettings(prev => ({ ...prev, budget }))}
+                        onClick={() => {
+                          setLeagueSettings(prev => ({ ...prev, budget }));
+                          if (areSettingsConfigured()) {
+                            setTimeout(() => setShowLeagueSettings(false), 500);
+                          }
+                        }}
                         style={{
                           padding: '8px 16px',
                           border: `2px solid ${leagueSettings.budget === budget ? '#035E7B' : '#d1d5db'}`,
@@ -370,7 +361,12 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     ].map(qb => (
                       <button
                         key={qb.value.toString()}
-                        onClick={() => setLeagueSettings(prev => ({ ...prev, isSuperflex: qb.value }))}
+                        onClick={() => {
+                          setLeagueSettings(prev => ({ ...prev, isSuperflex: qb.value }));
+                          if (areSettingsConfigured()) {
+                            setTimeout(() => setShowLeagueSettings(false), 500);
+                          }
+                        }}
                         style={{
                           padding: '8px 16px',
                           border: `2px solid ${leagueSettings.isSuperflex === qb.value ? '#035E7B' : '#d1d5db'}`,
