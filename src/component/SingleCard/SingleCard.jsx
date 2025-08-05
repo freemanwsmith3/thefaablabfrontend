@@ -20,7 +20,7 @@ const SingleCard = ({ week, curWk, isDemo }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
   
-  // League settings state with 12 teams as default
+  // League settings state with defaults: 12 team, half-ppr, $200, 1 QB
   const [leagueSettings, setLeagueSettings] = useState(() => {
     const saved = localStorage.getItem('leagueSettings');
     if (saved) {
@@ -28,9 +28,9 @@ const SingleCard = ({ week, curWk, isDemo }) => {
     }
     return {
       teamCount: 12,
-      scoring: null,
-      budget: null,
-      isSuperflex: null
+      scoring: 'half-ppr',
+      budget: 200,
+      isSuperflex: false
     };
   });
 
