@@ -52,7 +52,7 @@ const FantasyProsWidget = () => {
             target="_blank"
             rel="nofollow"
           >
-            2025 Fantasy Football Rankings
+            2025 FAABLab Draft Rankings
           </a>{' '}
           powered by FantasyPros
         </span>

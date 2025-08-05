@@ -19,8 +19,6 @@ const SingleCard = ({ week, curWk, isDemo }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
-  const [leagueSettingsRef, setLeagueSettingsRef] = useState(null);
-  const [hasScrolledPast, setHasScrolledPast] = useState(false);
   
   // League settings state with 12 teams as default
   const [leagueSettings, setLeagueSettings] = useState(() => {
@@ -34,24 +32,6 @@ const SingleCard = ({ week, curWk, isDemo }) => {
       budget: null,
       isSuperflex: null
     };
-  });
-
-  // Track if settings box should be open - defaults to true for auction weeks
-  const [showLeagueSettings, setShowLeagueSettings] = useState(() => {
-    const isAuctionWeek = week % 1000 === 0;
-    if (!isAuctionWeek) return false;
-    
-    const saved = localStorage.getItem('leagueSettings');
-    if (saved) {
-      const settings = JSON.parse(saved);
-      // If all settings are configured, start closed
-      return !(settings.teamCount !== null && 
-               settings.scoring !== null && 
-               settings.budget !== null && 
-               settings.isSuperflex !== null);
-    }
-    // If no saved settings, start open
-    return true;
   });
 
   const apiUrl = 'https://faablab.herokuapp.com/api';
@@ -70,39 +50,6 @@ const SingleCard = ({ week, curWk, isDemo }) => {
            leagueSettings.budget !== null &&
            leagueSettings.isSuperflex !== null;
   };
-
-  // Auto-close when all settings are selected
-  useEffect(() => {
-    if (areAllSettingsSelected() && showLeagueSettings) {
-      setTimeout(() => {
-        setShowLeagueSettings(false);
-        setHasScrolledPast(true);
-      }, 800);
-    }
-  }, [leagueSettings, showLeagueSettings]);
-
-  // Check if settings have been configured (for compact display)
-  const areSettingsConfigured = () => {
-    return areAllSettingsSelected();
-  };
-
-  // Scroll listener - only collapses when scrolled past, doesn't auto-expand
-  useEffect(() => {
-    if (!isAuctionWeek || !leagueSettingsRef || !areSettingsConfigured()) return;
-
-    const handleScroll = () => {
-      const rect = leagueSettingsRef.getBoundingClientRect();
-      const isScrolledPast = rect.bottom < 100;
-      
-      if (isScrolledPast && showLeagueSettings && !hasScrolledPast) {
-        setShowLeagueSettings(false);
-        setHasScrolledPast(true);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isAuctionWeek, leagueSettingsRef, showLeagueSettings, hasScrolledPast, areSettingsConfigured]);
 
   const onChange = (value) => {
     setBidValue(value);
@@ -244,234 +191,178 @@ const SingleCard = ({ week, curWk, isDemo }) => {
       </div>
 
       {isAuctionWeek && (
-        <div 
-          ref={setLeagueSettingsRef}
-          style={{ 
-            maxWidth: '600px', 
-            margin: '0 auto 20px auto',
-            padding: '0 16px' // Add horizontal padding for mobile spacing
-          }}
-        >
-          
-          {areSettingsConfigured() && !showLeagueSettings && (
-            <div style={{
-              padding: '16px 20px',
-              backgroundColor: '#f8fafc',
-              border: '2px solid #035E7B',
-              borderRadius: '12px',
+        <div style={{ 
+          maxWidth: '600px', 
+          margin: '0 auto 20px auto',
+          padding: '0 16px'
+        }}>
+          <div style={{
+            padding: '20px',
+            backgroundColor: '#f8fafc',
+            border: '2px solid #035E7B',
+            borderRadius: '12px'
+          }}>
+            <div style={{ 
+              fontSize: '16px', 
+              color: '#035E7B', 
+              fontWeight: '600', 
+              marginBottom: '16px', 
+              textAlign: 'center',
               display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start', // Changed from center to flex-start
-              gap: '12px' // Add gap to prevent overlap
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
             }}>
-              <div style={{ flex: 1, minWidth: 0 }}> {/* Allow text to shrink */}
-                <div style={{ fontSize: '14px', color: '#035E7B', fontWeight: '600', marginBottom: '4px' }}>
-                  Your League Format
+              <SettingOutlined />
+              League Settings
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
+                  Team Count
+                </label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                  {[8, 10, 12, 14, 16].map(count => (
+                    <button
+                      key={count}
+                      onClick={() => setLeagueSettings(prev => ({ ...prev, teamCount: count }))}
+                      style={{
+                        padding: '8px 16px',
+                        border: `2px solid ${leagueSettings.teamCount === count ? '#035E7B' : '#d1d5db'}`,
+                        backgroundColor: leagueSettings.teamCount === count ? '#035E7B' : 'white',
+                        color: leagueSettings.teamCount === count ? 'white' : '#035E7B',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {count}
+                    </button>
+                  ))}
                 </div>
-                <div style={{ 
-                  fontSize: '13px', 
-                  color: '#64748b',
-                  wordBreak: 'break-word' // Prevent text overflow
-                }}>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
+                  Scoring System
+                </label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                  {[
+                    { value: 'standard', label: 'Standard' },
+                    { value: 'half-ppr', label: 'Half PPR' },
+                    { value: 'full-ppr', label: 'Full PPR' }
+                  ].map(scoring => (
+                    <button
+                      key={scoring.value}
+                      onClick={() => setLeagueSettings(prev => ({ ...prev, scoring: scoring.value }))}
+                      style={{
+                        padding: '8px 16px',
+                        border: `2px solid ${leagueSettings.scoring === scoring.value ? '#035E7B' : '#d1d5db'}`,
+                        backgroundColor: leagueSettings.scoring === scoring.value ? '#035E7B' : 'white',
+                        color: leagueSettings.scoring === scoring.value ? 'white' : '#035E7B',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {scoring.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
+                  Auction Budget
+                </label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+                  {[100, 200, 300].map(budget => (
+                    <button
+                      key={budget}
+                      onClick={() => setLeagueSettings(prev => ({ ...prev, budget }))}
+                      style={{
+                        padding: '8px 16px',
+                        border: `2px solid ${leagueSettings.budget === budget ? '#035E7B' : '#d1d5db'}`,
+                        backgroundColor: leagueSettings.budget === budget ? '#035E7B' : 'white',
+                        color: leagueSettings.budget === budget ? 'white' : '#035E7B',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                      }}
+                    >
+                      ${budget}
+                    </button>
+                  ))}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '12px', color: '#666' }}>Custom:</span>
+                    <InputNumber
+                      value={leagueSettings.budget}
+                      onChange={(value) => setLeagueSettings(prev => ({ ...prev, budget: value }))}
+                      style={{ width: '80px' }}
+                      min={50}
+                      max={500}
+                      step={25}
+                      size="small"
+                      placeholder="$"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
+                  Quarterback Format
+                </label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                  {[
+                    { value: false, label: 'Standard (1 QB)' },
+                    { value: true, label: 'Superflex (2 QB)' }
+                  ].map(qb => (
+                    <button
+                      key={qb.value.toString()}
+                      onClick={() => setLeagueSettings(prev => ({ ...prev, isSuperflex: qb.value }))}
+                      style={{
+                        padding: '8px 16px',
+                        border: `2px solid ${leagueSettings.isSuperflex === qb.value ? '#035E7B' : '#d1d5db'}`,
+                        backgroundColor: leagueSettings.isSuperflex === qb.value ? '#035E7B' : 'white',
+                        color: leagueSettings.isSuperflex === qb.value ? 'white' : '#035E7B',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {qb.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ 
+                padding: '12px', 
+                backgroundColor: 'white', 
+                borderRadius: '8px',
+                border: '1px solid #e2e8f0',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '6px', fontWeight: '600' }}>
+                  YOUR LEAGUE FORMAT
+                </div>
+                <div style={{ fontSize: '13px', color: '#035E7B', fontWeight: '600' }}>
                   {getLeagueDisplayText()}
                 </div>
+                <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
+                  {getProgressText()}
+                </div>
               </div>
-              <button
-                onClick={() => {
-                  setShowLeagueSettings(true);
-                  setHasScrolledPast(false);
-                }}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#035E7B',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  flexShrink: 0, // Prevent button from shrinking
-                  whiteSpace: 'nowrap' // Keep button text on one line
-                }}
-              >
-                <SettingOutlined />
-                Edit
-              </button>
+
             </div>
-          )}
-
-          {(!areAllSettingsSelected() || showLeagueSettings) && (
-            <div style={{
-              padding: '20px',
-              backgroundColor: '#f8fafc',
-              border: '2px solid #035E7B',
-              borderRadius: '12px'
-            }}>
-              <div style={{ 
-                fontSize: '16px', 
-                color: '#035E7B', 
-                fontWeight: '600', 
-                marginBottom: '16px', 
-                textAlign: 'center',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}>
-                <SettingOutlined />
-                League Settings
-              </div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                
-                <div>
-                  <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
-                    Team Count
-                  </label>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    {[8, 10, 12, 14, 16].map(count => (
-                      <button
-                        key={count}
-                        onClick={() => setLeagueSettings(prev => ({ ...prev, teamCount: count }))}
-                        style={{
-                          padding: '8px 16px',
-                          border: `2px solid ${leagueSettings.teamCount === count ? '#035E7B' : '#d1d5db'}`,
-                          backgroundColor: leagueSettings.teamCount === count ? '#035E7B' : 'white',
-                          color: leagueSettings.teamCount === count ? 'white' : '#035E7B',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          fontSize: '14px'
-                        }}
-                      >
-                        {count}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
-                    Scoring System
-                  </label>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    {[
-                      { value: 'standard', label: 'Standard' },
-                      { value: 'half-ppr', label: 'Half PPR' },
-                      { value: 'full-ppr', label: 'Full PPR' }
-                    ].map(scoring => (
-                      <button
-                        key={scoring.value}
-                        onClick={() => setLeagueSettings(prev => ({ ...prev, scoring: scoring.value }))}
-                        style={{
-                          padding: '8px 16px',
-                          border: `2px solid ${leagueSettings.scoring === scoring.value ? '#035E7B' : '#d1d5db'}`,
-                          backgroundColor: leagueSettings.scoring === scoring.value ? '#035E7B' : 'white',
-                          color: leagueSettings.scoring === scoring.value ? 'white' : '#035E7B',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          fontSize: '14px'
-                        }}
-                      >
-                        {scoring.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
-                    Auction Budget
-                  </label>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-                    {[100, 200, 300].map(budget => (
-                      <button
-                        key={budget}
-                        onClick={() => setLeagueSettings(prev => ({ ...prev, budget }))}
-                        style={{
-                          padding: '8px 16px',
-                          border: `2px solid ${leagueSettings.budget === budget ? '#035E7B' : '#d1d5db'}`,
-                          backgroundColor: leagueSettings.budget === budget ? '#035E7B' : 'white',
-                          color: leagueSettings.budget === budget ? 'white' : '#035E7B',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          fontSize: '14px'
-                        }}
-                      >
-                        ${budget}
-                      </button>
-                    ))}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '12px', color: '#666' }}>Custom:</span>
-                      <InputNumber
-                        value={leagueSettings.budget}
-                        onChange={(value) => setLeagueSettings(prev => ({ ...prev, budget: value }))}
-                        style={{ width: '80px' }}
-                        min={50}
-                        max={500}
-                        step={25}
-                        size="small"
-                        placeholder="$"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '14px', color: '#035E7B' }}>
-                    Quarterback Format
-                  </label>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    {[
-                      { value: false, label: 'Standard (1 QB)' },
-                      { value: true, label: 'Superflex (2 QB)' }
-                    ].map(qb => (
-                      <button
-                        key={qb.value.toString()}
-                        onClick={() => setLeagueSettings(prev => ({ ...prev, isSuperflex: qb.value }))}
-                        style={{
-                          padding: '8px 16px',
-                          border: `2px solid ${leagueSettings.isSuperflex === qb.value ? '#035E7B' : '#d1d5db'}`,
-                          backgroundColor: leagueSettings.isSuperflex === qb.value ? '#035E7B' : 'white',
-                          color: leagueSettings.isSuperflex === qb.value ? 'white' : '#035E7B',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          fontSize: '14px'
-                        }}
-                      >
-                        {qb.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div style={{ 
-                  padding: '12px', 
-                  backgroundColor: 'white', 
-                  borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '6px', fontWeight: '600' }}>
-                    YOUR LEAGUE FORMAT
-                  </div>
-                  <div style={{ fontSize: '13px', color: '#035E7B', fontWeight: '600' }}>
-                    {getLeagueDisplayText()}
-                  </div>
-                  <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-                    {getProgressText()}
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       )}
       
