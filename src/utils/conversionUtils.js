@@ -39,8 +39,8 @@ export const CONVERSION_FACTORS = {
 
   // Superflex adjustments (when converting TO standard baseline)
   superflex: {
-    QB: 0.35,  // QBs much less valuable in 1QB leagues
-    other: 1.15 // More budget available for other positions
+    QB: 2.85,  // QBs much MORE valuable in superflex leagues
+    other: 0.87 // Less budget available for other positions
   },
 
   // Dynasty adjustments (when converting TO redraft baseline)
