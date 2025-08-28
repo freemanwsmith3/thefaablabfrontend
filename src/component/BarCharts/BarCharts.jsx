@@ -236,7 +236,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leag
         margin: '15px 5px'
       }}>
         <div style={{ fontSize: '14px', color: '#035E7B', fontWeight: '600', marginBottom: '12px', textAlign: 'center' }}>
-          🎯 BID CALCULATOR
+          🎯 BID SLIDER
         </div>
         
         {/* Slider */}
@@ -291,7 +291,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leag
               {formatBidAmount(sliderValue)}
             </div>
             <div style={{ fontSize: '11px', color: '#035E7Bad' }}>
-              Bid amount
+              Potential Bid
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
@@ -304,7 +304,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leag
               {currentWinProbability}%
             </div>
             <div style={{ fontSize: '11px', color: '#035E7Bad' }}>
-              Acquire probability
+              Acquire Probability
             </div>
           </div>
         </div>
