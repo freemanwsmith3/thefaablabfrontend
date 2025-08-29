@@ -20,6 +20,12 @@ const SingleCard = ({ week, curWk, isDemo }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
   
+  // NEW: Store original bid values by player ID and week
+  const [originalBids, setOriginalBids] = useState(() => {
+    const saved = localStorage.getItem('originalBids');
+    return saved ? JSON.parse(saved) : {};
+  });
+  
   // League settings state with defaults: 12 team, half-ppr, $200, 1 QB
   const [leagueSettings, setLeagueSettings] = useState(() => {
     const saved = localStorage.getItem('leagueSettings');
@@ -43,6 +49,11 @@ const SingleCard = ({ week, curWk, isDemo }) => {
     localStorage.setItem('leagueSettings', JSON.stringify(leagueSettings));
   }, [leagueSettings]);
 
+  // NEW: Save original bids to localStorage
+  useEffect(() => {
+    localStorage.setItem('originalBids', JSON.stringify(originalBids));
+  }, [originalBids]);
+
   // Check if all settings have been configured
   const areAllSettingsSelected = () => {
     return leagueSettings.teamCount !== null &&
@@ -60,6 +71,13 @@ const SingleCard = ({ week, curWk, isDemo }) => {
       const baselineBid = isAuctionWeek 
         ? convertToBaseline(bidValue, leagueSettings, playerPosition)
         : bidValue;
+
+      // NEW: Store the original bid value before converting
+      const bidKey = `${week}_${playerID}`;
+      setOriginalBids(prev => ({
+        ...prev,
+        [bidKey]: bidValue
+      }));
 
       const data = {
         week: week,
@@ -80,6 +98,12 @@ const SingleCard = ({ week, curWk, isDemo }) => {
       return prevIndices;
     });
     sendBid(playerID, playerPosition);
+  };
+
+  // NEW: Function to get original bid for a player
+  const getOriginalBid = (playerID) => {
+    const bidKey = `${week}_${playerID}`;
+    return originalBids[bidKey] || null;
   };
 
   useEffect(() => {
@@ -421,6 +445,7 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                       statData={statData[item.id]}
                       leagueSettings={isAuctionWeek ? leagueSettings : null}
                       isAuctionWeek={isAuctionWeek}
+                      originalBid={getOriginalBid(item.id)} // NEW: Pass the original bid
                     />
                   )} 
                 </div>

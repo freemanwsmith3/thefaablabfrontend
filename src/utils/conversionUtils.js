@@ -39,7 +39,7 @@ export const CONVERSION_FACTORS = {
 
   // Superflex adjustments (when converting TO standard baseline)
   superflex: {
-    QB: 2.85,  // QBs much MORE valuable in superflex leagues
+    QB: 2.35,  // QBs much MORE valuable in superflex leagues
     other: 0.87 // Less budget available for other positions
   },
 

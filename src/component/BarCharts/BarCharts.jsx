@@ -1,9 +1,18 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import { convertBidRangeData, convertFromBaseline } from '../../utils/conversionUtils';
 import './barCharts.css';
 
-const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leagueSettings, isAuctionWeek }) => {
+const BidChart = ({ 
+  playerName, 
+  playerTeam, 
+  playerPos, 
+  graphData, 
+  statData, 
+  leagueSettings, 
+  isAuctionWeek,
+  originalBid // NEW: Original bid prop from SingleCard
+}) => {
   const labelColors = ['#002E2C', '#035E7B'];
   const { averageBid, medianBid, mostCommonBid, numberOfBids } = statData;
 
@@ -134,7 +143,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leag
 
   const sliderRange = getSliderRange();
 
-  // Get bid amount that gives ~50% win probability
+  // Get bid amount that gives ~50% win probability (fallback)
   const get50PercentBid = () => {
     if (!processedData.length) return 50;
     
@@ -148,8 +157,26 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leag
     return Math.round((sliderRange.min + sliderRange.max) / 2);
   };
 
-  // Slider functionality - default to 50% win probability
-  const [sliderValue, setSliderValue] = useState(() => get50PercentBid());
+  // NEW: Function to get the default slider value
+  const getDefaultSliderValue = () => {
+    // If we have an original bid, use it as default
+    if (originalBid !== null && originalBid !== undefined) {
+      // Make sure the original bid is within the slider range
+      const clampedBid = Math.max(sliderRange.min, Math.min(sliderRange.max, originalBid));
+      return clampedBid;
+    }
+    
+    // Fallback to 50% win probability bid
+    return get50PercentBid();
+  };
+
+  // UPDATED: Slider functionality - default to original bid or 50% win probability
+  const [sliderValue, setSliderValue] = useState(() => getDefaultSliderValue());
+
+  // NEW: Update slider when original bid or data changes
+  useEffect(() => {
+    setSliderValue(getDefaultSliderValue());
+  }, [originalBid, processedData, sliderRange.min, sliderRange.max]);
 
   const currentWinProbability = calculateWinProbability(sliderValue);
 
@@ -210,7 +237,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leag
   // Get currency symbol and format
   const formatBidAmount = (amount) => {
     if (isAuctionWeek) {
-      return `${amount}`;
+      return `$${amount}`;
     }
     return `${amount}%`;
   };
@@ -227,6 +254,22 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leag
       <div className="playerTitle">{playerName}</div>
       <div className="playerTeam">{playerPos} - {playerTeam}</div>
 
+      {/* NEW: Show original bid indicator if available
+      {originalBid !== null && originalBid !== undefined && (
+        <div style={{
+          padding: '8px 12px',
+          backgroundColor: '#e0f2fe',
+          border: '1px solid #0891b2',
+          borderRadius: '6px',
+          margin: '10px 5px',
+          textAlign: 'center',
+          fontSize: '12px',
+          color: '#0891b2'
+        }}>
+          <strong>Your Original Bid:</strong> {formatBidAmount(originalBid)}
+        </div>
+      )} */}
+
       {/* Interactive bid slider */}
       <div style={{
         padding: '20px',
@@ -236,7 +279,7 @@ const BidChart = ({ playerName, playerTeam, playerPos, graphData, statData, leag
         margin: '15px 5px'
       }}>
         <div style={{ fontSize: '14px', color: '#035E7B', fontWeight: '600', marginBottom: '12px', textAlign: 'center' }}>
-          🎯 BID SLIDER
+          SLIDE TO TRY ANOTHER BID
         </div>
         
         {/* Slider */}
