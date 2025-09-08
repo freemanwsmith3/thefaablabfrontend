@@ -10,6 +10,7 @@ import FAQS from "./component/FAQ/FAQS";
 import About from "./pages/About";
 import Auction from "./pages/Auction";
 import ThisYear from "./component/History/ThisYear"
+import TopTargetsDashboard from './pages/TopTargetsDashboard';
 import { initGA, logPageView } from './analytics';
 
 function App() {
@@ -24,8 +25,9 @@ function App() {
     <div className="">
       <Header currentWk={curWk} />
       <Routes>
-        {/* <Route exact path="/" element={<Home curWk={curWk} />} /> */}
+        <Route exact path="/" element={<Home curWk={curWk} />} />
         <Route exact path="/" element={<Auction />} />
+        <Route path="/toptargets" element={<TopTargetsDashboard week={curWk} />} />  
         <Route path="/auction" element={<Auction />} />
         <Route path="/demo" element={<Home curWk={30} />} />
         <Route path="/history" element={<History />} />
