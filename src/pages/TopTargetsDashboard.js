@@ -82,10 +82,22 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
     fetchData();
   }, [displayWeek]);
 
+  // Post height to parent window for iframe resizing
+  useEffect(() => {
+    if (!loading) {
+      setTimeout(() => {
+        const height = document.body.scrollHeight;
+        if (window.parent) {
+          window.parent.postMessage({ height }, '*');
+        }
+      }, 100);
+    }
+  }, [loading, topTargets]);
+
   if (loading) {
     return (
       <div style={{ 
-        width: '1024px', 
+        width: '1000px', 
         height: '600px', 
         display: 'flex', 
         justifyContent: 'center', 
@@ -99,32 +111,33 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
 
   return (
     <div style={{
-      width: '1024px',
-      minHeight: '800px',
+      width: '1000px',
+      minHeight: '750px',
       backgroundColor: '#ffffff',
-      padding: '20px',
-      fontFamily: 'Arial, sans-serif'
+      padding: '10px',
+      fontFamily: 'Arial, sans-serif',
+      boxSizing: 'border-box'
     }}>
       {/* Header */}
       <div style={{
         textAlign: 'center',
-        marginBottom: '30px',
+        marginBottom: '15px',
         borderBottom: '2px solid #035E7B',
-        paddingBottom: '15px'
+        paddingBottom: '10px'
       }}>
         <h1 style={{
-          margin: '0 0 10px 0',
+          margin: '0 0 5px 0',
           color: '#035E7B',
-          fontSize: '28px',
+          fontSize: '24px',
           fontWeight: 'bold'
         }}>
-          Week {displayWeek - 39} Top Targets by Position
+        FAABLab Top Crowdsourced Waiver Targets by Position
         </h1>
         <div style={{
-          fontSize: '14px',
+          fontSize: '13px',
           color: '#64748b'
         }}>
-          Most popular FAAB targets in each position
+        Interactive tool shows you the top targets and helps you determine the perfect bid
         </div>
       </div>
 
@@ -132,8 +145,9 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: '20px',
-        height: 'auto'
+        gap: '12px',
+        height: 'auto',
+        padding: '0 5px'
       }}>
         {['QB', 'RB', 'WR', 'TE'].map((position) => {
           const player = topTargets[position];
@@ -143,12 +157,12 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
               <div key={position} style={{
                 border: '1px solid #e2e8f0',
                 borderRadius: '8px',
-                padding: '20px',
+                padding: '5px',
                 backgroundColor: '#f8fafc',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                minHeight: '300px'
+                minHeight: '340px'
               }}>
                 <div style={{ textAlign: 'center', color: '#64748b' }}>
                   <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
@@ -164,19 +178,20 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
             <div key={position} style={{
               border: '2px solid #035E7B',
               borderRadius: '12px',
-              padding: '15px',
+              padding: '10px',
               backgroundColor: '#ffffff',
-              minHeight: '350px'
+              minHeight: '320px',
+              boxSizing: 'border-box'
             }}>
               {/* Position Header */}
               <div style={{
                 textAlign: 'center',
-                marginBottom: '15px',
-                padding: '8px',
+                marginBottom: '10px',
+                padding: '6px',
                 backgroundColor: '#035E7B',
                 color: 'white',
                 borderRadius: '6px',
-                fontSize: '16px',
+                fontSize: '15px',
                 fontWeight: 'bold'
               }}>
                 Top {position}
@@ -184,10 +199,11 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
 
               {/* Chart Container */}
               <div style={{
-                transform: 'scale(0.85)',
+                transform: 'scale(0.94)',
                 transformOrigin: 'top center',
-                width: '117.6%', // Compensate for scale
-                marginLeft: '-8.8%' // Center the scaled content
+                width: '117.6%',
+                marginLeft: '-8.8%',
+                overflow: 'hidden'
               }}>
                 <BidChart
                   playerName={player.name}
@@ -205,17 +221,45 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
         })}
       </div>
 
-      {/* Footer */}
+      {/* Footer - More Prominent */}
       <div style={{
         textAlign: 'center',
-        marginTop: '30px',
-        padding: '15px',
-        backgroundColor: '#f1f5f9',
+        marginTop: '20px',
+        padding: '18px',
+        backgroundColor: '#035E7B',
         borderRadius: '8px',
-        fontSize: '12px',
-        color: '#64748b'
+        fontSize: '16px',
+        color: 'white',
+        fontWeight: 'bold',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
       }}>
-        Data shows historical bidding patterns • Visit FAABLab.com for interactive tools
+        <div style={{ marginBottom: '5px' }}>
+          Want to see more players and get personalized recommendations?
+        </div>
+        <a 
+          href="https://www.faablab.app/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{
+            color: '#62D2FF',
+            textDecoration: 'none',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            borderBottom: '2px solid #62D2FF',
+            paddingBottom: '2px',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.color = '#ffffff';
+            e.target.style.borderBottomColor = '#ffffff';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.color = '#62D2FF';
+            e.target.style.borderBottomColor = '#62D2FF';
+          }}
+        >
+          Visit FAABLab.app for Full Access →
+        </a>
       </div>
     </div>
   );

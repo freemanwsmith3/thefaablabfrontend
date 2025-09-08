@@ -12,6 +12,7 @@ import Auction from "./pages/Auction";
 import ThisYear from "./component/History/ThisYear"
 import TopTargetsDashboard from './pages/TopTargetsDashboard';
 import { initGA, logPageView } from './analytics';
+import { useLocation } from 'react-router-dom'; 
 
 function App() {
   useEffect(() => {
@@ -21,26 +22,32 @@ function App() {
 
   const [curWk, setCurWk] = useState(41);
 
-  return (
-    <div className="">
-      <Header currentWk={curWk} />
-      <Routes>
-        <Route exact path="/" element={<Home curWk={curWk} />} />
-        <Route exact path="/" element={<Auction />} />
-        <Route path="/toptargets" element={<TopTargetsDashboard week={curWk} />} />  
-        <Route path="/auction" element={<Auction />} />
-        <Route path="/demo" element={<Home curWk={30} />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/thisyear" element={<ThisYear />} />
-        <Route path="/history/:wk" element={<Home curWk={curWk} />} />
-        <Route path="/rankings" element={<FantasyProsWidget />} />
-        <Route path="/howitwork" element={<HowItWork />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/faq" element={<FAQS />} />
-      </Routes>
-      <Footer />
-    </div>
-  );
+const location = useLocation();
+
+return (
+  <div className="">
+    {/* Only show Header if NOT on toptargets page */}
+    {location.pathname !== '/toptargets' && <Header currentWk={curWk} />}
+    
+    <Routes>
+      <Route exact path="/" element={<Home curWk={curWk} />} />
+      <Route exact path="/" element={<Auction />} />
+      <Route path="/toptargets" element={<TopTargetsDashboard week={curWk} />} />  
+      <Route path="/auction" element={<Auction />} />
+      <Route path="/demo" element={<Home curWk={30} />} />
+      <Route path="/history" element={<History />} />
+      <Route path="/thisyear" element={<ThisYear />} />
+      <Route path="/history/:wk" element={<Home curWk={curWk} />} />
+      <Route path="/rankings" element={<FantasyProsWidget />} />
+      <Route path="/howitwork" element={<HowItWork />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/faq" element={<FAQS />} />
+    </Routes>
+    
+    {/* You might also want to hide Footer on toptargets */}
+    {location.pathname !== '/toptargets' && <Footer />}
+  </div>
+);
 }
 
 export default App;
