@@ -97,8 +97,8 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
   if (loading) {
     return (
       <div style={{ 
-        width: '1000px', 
-        height: '600px', 
+        width: '700px', 
+        height: '400px', 
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center',
@@ -111,8 +111,8 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
 
   return (
     <div style={{
-      width: '1000px',
-      minHeight: '750px',
+      width: '700px',
+      minHeight: '1400px',
       backgroundColor: '#ffffff',
       padding: '10px',
       fontFamily: 'Arial, sans-serif',
@@ -128,26 +128,24 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
         <h1 style={{
           margin: '0 0 5px 0',
           color: '#035E7B',
-          fontSize: '24px',
+          fontSize: '22px',
           fontWeight: 'bold'
         }}>
-        FAABLab Top Crowdsourced Waiver Targets by Position
+        FAABLab Top Waiver Targets by Position
         </h1>
         <div style={{
-          fontSize: '13px',
+          fontSize: '12px',
           color: '#64748b'
         }}>
-        Interactive tool shows you the top targets and helps you determine the perfect bid
+        Crowdsourced data to help you determine the perfect bid
         </div>
       </div>
 
-      {/* Grid Layout for Positions */}
+      {/* Vertical Stack Layout for Positions */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '12px',
-        height: 'auto',
-        padding: '0 5px'
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px'
       }}>
         {['QB', 'RB', 'WR', 'TE'].map((position) => {
           const player = topTargets[position];
@@ -157,18 +155,18 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
               <div key={position} style={{
                 border: '1px solid #e2e8f0',
                 borderRadius: '8px',
-                padding: '5px',
+                padding: '10px',
                 backgroundColor: '#f8fafc',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                minHeight: '340px'
+                minHeight: '300px'
               }}>
                 <div style={{ textAlign: 'center', color: '#64748b' }}>
-                  <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '6px' }}>
                     {position}
                   </div>
-                  <div>No targets available</div>
+                  <div style={{ fontSize: '13px' }}>No targets available</div>
                 </div>
               </div>
             );
@@ -177,7 +175,7 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
           return (
             <div key={position} style={{
               border: '2px solid #035E7B',
-              borderRadius: '12px',
+              borderRadius: '10px',
               padding: '10px',
               backgroundColor: '#ffffff',
               minHeight: '320px',
@@ -186,12 +184,12 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
               {/* Position Header */}
               <div style={{
                 textAlign: 'center',
-                marginBottom: '10px',
+                marginBottom: '8px',
                 padding: '6px',
                 backgroundColor: '#035E7B',
                 color: 'white',
                 borderRadius: '6px',
-                fontSize: '15px',
+                fontSize: '14px',
                 fontWeight: 'bold'
               }}>
                 Top {position}
@@ -199,10 +197,10 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
 
               {/* Chart Container */}
               <div style={{
-                transform: 'scale(0.94)',
+                transform: 'scale(1.04)',
                 transformOrigin: 'top center',
-                width: '117.6%',
-                marginLeft: '-8.8%',
+                width: '111.1%',
+                marginLeft: '-5.5%',
                 overflow: 'hidden'
               }}>
                 <BidChart
@@ -225,15 +223,15 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
       <div style={{
         textAlign: 'center',
         marginTop: '20px',
-        padding: '18px',
+        padding: '15px',
         backgroundColor: '#035E7B',
         borderRadius: '8px',
-        fontSize: '16px',
+        fontSize: '14px',
         color: 'white',
         fontWeight: 'bold',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
       }}>
-        <div style={{ marginBottom: '5px' }}>
+        <div style={{ marginBottom: '4px' }}>
           Want to see more players and get personalized recommendations?
         </div>
         <a 
@@ -243,7 +241,7 @@ const TopTargetsDashboard = ({ week, curWk, isDemo }) => {
           style={{
             color: '#62D2FF',
             textDecoration: 'none',
-            fontSize: '18px',
+            fontSize: '16px',
             fontWeight: 'bold',
             borderBottom: '2px solid #62D2FF',
             paddingBottom: '2px',
