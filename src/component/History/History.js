@@ -33,7 +33,7 @@ const History = () => {
             className="week-card"
             onClick={() => handleWeekClick(week)}
           >
-            <h3>Week {week}</h3>
+            <h3>Week {week + 1}</h3>
             <p>2024</p>
           </div>
         ))}
