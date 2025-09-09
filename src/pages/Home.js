@@ -16,25 +16,25 @@ function Home({ curWk }) {
       // 2025: weeks 41-53 map to week 1-13 of 2025
       return {
         year: 2025,
-        displayWeek: weekNumber - 40
+        displayWeek: weekNumber - 39
       };
     } else if (weekNumber >= 28) {
       // 2024: weeks 28-40 map to week 1-13 of 2024
       return {
         year: 2024,
-        displayWeek: weekNumber - 28
+        displayWeek: weekNumber - 27
       };
     } else if (weekNumber >= 15) {
       // 2023: weeks 15-27 map to week 1-13 of 2023
       return {
         year: 2023,
-        displayWeek: weekNumber - 15
+        displayWeek: weekNumber - 14
       };
     } else if (weekNumber >= 2) {
       // 2022: weeks 2-14 map to week 1-13 of 2022
       return {
         year: 2022,
-        displayWeek: weekNumber - 1
+        displayWeek: weekNumber 
       };
     } else {
       // For weeks before 2, assume they're from earlier years
