@@ -106,6 +106,75 @@ const SingleCard = ({ week, curWk, isDemo }) => {
     return originalBids[bidKey] || null;
   };
 
+  // Helper function to determine if image needs centering
+  const isPrivateImageUrl = (imageUrl) => {
+    return imageUrl && imageUrl.startsWith('https://static.www.nfl.com/image/private/');
+  };
+
+  // NEW: Helper function to check if image is a smaller god-combine/god-prospect image
+  const isSmallCombineImage = (imageUrl) => {
+    return imageUrl && (imageUrl.includes('god-combine') || imageUrl.includes('god-prospect'));
+  };
+
+  // NEW: Helper function to get appropriate container styling
+  const getImageContainerStyle = (imageUrl) => {
+    const baseStyle = {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    };
+
+    if (isSmallCombineImage(imageUrl)) {
+      // For smaller god-combine/god-prospect images, use less height for better centering
+      return {
+        ...baseStyle,
+        minHeight: '80px',   // Much less height for smaller images
+        padding: '5px 0'     // Reduced vertical padding
+      };
+    } else if (isPrivateImageUrl(imageUrl)) {
+      // For regular private NFL images
+      return {
+        ...baseStyle,
+        minHeight: '120px'
+      };
+    } else {
+      // For other images
+      return {
+        ...baseStyle,
+        minHeight: 'auto'
+      };
+    }
+  };
+
+  // NEW: Helper function to get appropriate image styling
+  const getImageStyle = (imageUrl) => {
+    const baseStyle = {
+      display: 'block'
+    };
+
+    if (isSmallCombineImage(imageUrl)) {
+      // For smaller images, ensure they're centered and add some constraints
+      return {
+        ...baseStyle,
+        margin: '0 auto',
+        maxWidth: '100%',
+        height: 'auto'
+      };
+    } else if (isPrivateImageUrl(imageUrl)) {
+      // For regular private images
+      return {
+        ...baseStyle,
+        margin: '0 auto'
+      };
+    } else {
+      // For other images
+      return {
+        ...baseStyle,
+        margin: 'initial'
+      };
+    }
+  };
+
   useEffect(() => {
     const visibleItems = JSON.parse(localStorage.getItem('visible'));
     if (visibleItems) {
@@ -174,6 +243,64 @@ const SingleCard = ({ week, curWk, isDemo }) => {
     const matchesPosition = positionFilter ? player.position === positionFilter : true;
     return matchesSearch && matchesPosition;
   });
+
+  // Create array with ads inserted at positions 0, 5, 10, 15, etc.
+  const createDataWithAds = () => {
+    const result = [];
+    filteredData.forEach((player, index) => {
+      // Insert ad at the very beginning (position 0)
+      if (index === 0) {
+        result.push({ type: 'ad', id: 'ad-0' });
+      }
+      
+      result.push({ type: 'player', data: player, originalIndex: index });
+      
+      // Insert ad every 5 players after the first one
+      if ((index + 1) % 5 === 0 && index < filteredData.length - 1) {
+        result.push({ type: 'ad', id: `ad-${Math.floor((index + 1) / 5)}` });
+      }
+    });
+    return result;
+  };
+
+  const dataWithAds = createDataWithAds();
+
+  // Ad Banner Component
+const AdBanner = ({ adId }) => {
+  const handleAdClick = () => {
+    // Replace with your actual link URL
+    window.open('https://www.sharpfootballanalysis.com/fantasy-packages/?utm_source=faab', '_blank');
+  };
+
+  return (
+    <div 
+      className="mainCard" 
+      style={{ 
+        cursor: 'pointer',
+        border: 'none',  // Remove border
+        boxShadow: 'none'  // Remove box shadow if any
+      }} 
+      onClick={handleAdClick}
+    >
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '10px'
+      }}>
+        <img 
+          src="/faab_square_ad.png" // You'll need to add this to your public folder
+          alt="Sharp Fantasy - Weekly Game Previews"
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+            borderRadius: '8px'
+          }}
+        />
+      </div>
+    </div>
+  );
+};
 
   // Helper functions for display
   const getScoringDisplay = () => {
@@ -418,42 +545,42 @@ const SingleCard = ({ week, curWk, isDemo }) => {
       </div>
 
       <div className="singleCard">
-        {filteredData.map((item, index) => (
-          <React.Fragment key={index}>
-            {index % 4 === 0 && index !== 0 && index % 8 !== 0 && (
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <a href='https://www.dailyfantasynerd.com?afmc=ba' target="_blank" rel="noopener noreferrer">
-                  <img
-                    src='https://leaddyno-client-images.s3.amazonaws.com/71204ad8ccb61f89f443611d24ec951b101516a9/0ec7cd0a590b758c96e947630563cfbbbbb6f049_DFN-NFL-300x250.png'
-                    alt="Daily Fantasy Nerd"
-                    style={{ width: '300px', height: '250px' }}
-                  />
-                </a>
-              </div>
-            )}
-            <div className="mainCard">
-              {isPastWeek || clickedIndex.includes(item.target_id) ? (
+        {dataWithAds.map((item, index) => {
+          if (item.type === 'ad') {
+            return <AdBanner key={item.id} adId={item.id} />;
+          }
+          
+          const player = item.data;
+          return (
+            <div key={`player-${player.id || index}`} className="mainCard">
+              {isPastWeek || clickedIndex.includes(player.target_id) ? (
                 <div>
                   {loading ? (
                     <CircularProgress />
                   ) : (
                     <BidChart
-                      playerName={item.name}
-                      playerTeam={item.team}
-                      playerPos={item.position}
-                      graphData={graphData[item.id]} 
-                      statData={statData[item.id]}
+                      playerName={player.name}
+                      playerTeam={player.team}
+                      playerPos={player.position}
+                      graphData={graphData[player.id]} 
+                      statData={statData[player.id]}
                       leagueSettings={isAuctionWeek ? leagueSettings : null}
                       isAuctionWeek={isAuctionWeek}
-                      originalBid={getOriginalBid(item.id)} // NEW: Pass the original bid
+                      originalBid={getOriginalBid(player.id)} // NEW: Pass the original bid
                     />
                   )} 
                 </div>
               ) : (
                 <>
-                  <img src={item.image} alt="missing" />
-                  <div className="playerTitle">{item.name}</div>
-                  <div className="playerTeam">{item.position} - {item.team}</div>
+                  <div style={getImageContainerStyle(player.image)}>
+                    <img 
+                      src={player.image} 
+                      alt="missing"
+                      style={getImageStyle(player.image)}
+                    />
+                  </div>
+                  <div className="playerTitle">{player.name}</div>
+                  <div className="playerTeam">{player.position} - {player.team}</div>
                   <div className="inputContainer">
                     <InputNumber
                       min={0}
@@ -465,7 +592,7 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                     />
                     <button
                       className="mybtn"
-                      onClick={() => handleButtonClick(item.target_id, item.id, item.position)}
+                      onClick={() => handleButtonClick(player.target_id, player.id, player.position)}
                     >
                       SUBMIT
                     </button>
@@ -473,8 +600,8 @@ const SingleCard = ({ week, curWk, isDemo }) => {
                 </>
               )}
             </div>
-          </React.Fragment>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
