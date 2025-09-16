@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Auction from "./pages/Auction";
 import ThisYear from "./component/History/ThisYear"
 import TopTargetsDashboard from './pages/TopTargetsDashboard';
+import CompactTopTargetsDashboard from './pages/CompactTopTargetsDashboard'
 import { initGA, logPageView } from './analytics';
 import { useLocation } from 'react-router-dom'; 
 
@@ -23,16 +24,20 @@ function App() {
   const [curWk, setCurWk] = useState(42);
 
 const location = useLocation();
+const hideHeaderFooterRoutes = ['/toptargets', '/compact-dashboard'];
+
+
 
 return (
   <div className="">
     {/* Only show Header if NOT on toptargets page */}
-    {location.pathname !== '/toptargets' && <Header currentWk={curWk} />}
+    {!hideHeaderFooterRoutes.includes(location.pathname) && <Header currentWk={curWk} />}
     
     <Routes>
       <Route exact path="/" element={<Home curWk={curWk} />} />
       <Route exact path="/" element={<Auction />} />
       <Route path="/toptargets" element={<TopTargetsDashboard week={curWk} />} />  
+      <Route path="/compact-dashboard" element={<CompactTopTargetsDashboard week={curWk} />} />
       <Route path="/auction" element={<Auction />} />
       <Route path="/demo" element={<Home curWk={30} />} />
       <Route path="/history" element={<History />} />
@@ -45,7 +50,7 @@ return (
     </Routes>
     
     {/* You might also want to hide Footer on toptargets */}
-    {location.pathname !== '/toptargets' && <Footer />}
+  {!hideHeaderFooterRoutes.includes(location.pathname) && <Footer />}
   </div>
 );
 }
