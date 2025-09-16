@@ -20,7 +20,7 @@ function App() {
     logPageView();
   }, []);
 
-  const [curWk, setCurWk] = useState(41);
+  const [curWk, setCurWk] = useState(42);
 
 const location = useLocation();
 
