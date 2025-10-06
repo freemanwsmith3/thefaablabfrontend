@@ -21,7 +21,7 @@ function App() {
     logPageView();
   }, []);
 
-  const [curWk, setCurWk] = useState(44);
+  const [curWk, setCurWk] = useState(45);
 
 const location = useLocation();
 const hideHeaderFooterRoutes = ['/toptargets', '/compact-dashboard'];
