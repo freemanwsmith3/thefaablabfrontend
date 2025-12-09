@@ -13,7 +13,7 @@ const History = () => {
   // Function to get weeks for 2024
   const getWeeksFor2024 = () => {
     // 2024 has 13 weeks in your system
-    return Array.from({ length: 14 }, (_, i) => i + 1);
+    return Array.from({ length: 13 }, (_, i) => i + 1);
   };
 
   const handleWeekClick = (displayWeek) => {
