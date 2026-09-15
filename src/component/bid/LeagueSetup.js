@@ -84,7 +84,7 @@ export default function LeagueSetup({ league, onChange, open, onToggle }) {
     <Card>
       <HeaderRow onClick={onToggle} aria-expanded={open}>
         <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Eyebrow>STEP 1 — YOUR LEAGUE</Eyebrow>
+          <Eyebrow>ENTER YOUR LEAGUE SETTINGS</Eyebrow>
           <Summary>{teams} teams · ${budget} FAAB</Summary>
         </span>
         <Chip>{open ? 'Done' : 'Change'}</Chip>

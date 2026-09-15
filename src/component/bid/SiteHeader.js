@@ -77,22 +77,22 @@ const WeekStrip = styled.div`background: ${color.brandDark};`;
 const WeekInner = styled.div`
   max-width: 1180px;
   margin: 0 auto;
-  padding: 8px 14px;
+  padding: 14px 14px 15px;
   display: flex;
   align-items: center;
   gap: 10px;
 `;
-const WeekPill = styled.span`
-  display: inline-flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+// A heading rather than a pill: the week is the single most important piece of
+// context on the page, and a small bordered tag read as incidental metadata.
+// h2, not h1 -- the page's h1 is the descriptive one the page renders for
+// search engines, and two h1s would compete.
+const WeekHeading = styled.h2`
+  margin: 0;
   color: #fff;
-  font-size: 12px;
+  font-size: 26px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 5px 10px;
-  border-radius: 999px;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
 `;
 const Closes = styled.span`
   color: ${color.onTealMuted};
@@ -129,7 +129,7 @@ export default function SiteHeader({ week, closesAt, narrow, menuOpen, onToggleM
       )}
       <WeekStrip>
         <WeekInner>
-          <WeekPill>WEEK {week}</WeekPill>
+          <WeekHeading>Week {week}</WeekHeading>
           {closesAt && <Closes>{closesAt}</Closes>}
         </WeekInner>
       </WeekStrip>
