@@ -188,7 +188,7 @@ export default function WeeklyBids({ season, week }) {
                   rel="noopener noreferrer"
                 >
                   <span aria-hidden="true">☕</span>
-                  FAABLab is free — support it on Ko-fi if it helped
+                  FAABLab is free — buy me a coffee if it helped
                 </Coffee>
               )}
               <PlayerCard
