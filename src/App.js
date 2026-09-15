@@ -12,8 +12,32 @@ import Auction from "./pages/Auction";
 import ThisYear from "./component/History/ThisYear"
 import TopTargetsDashboard from './pages/TopTargetsDashboard';
 import CompactTopTargetsDashboard from './pages/CompactTopTargetsDashboard'
+import WeeklyBids from './pages/WeeklyBids';
+import { fetchCurrentWeek } from './api/faabApi';
 import { initGA, logPageView } from './analytics';
-import { useLocation } from 'react-router-dom'; 
+import { useLocation, useParams } from 'react-router-dom'; 
+
+/**
+ * Resolves the live season and week from the API instead of a hardcoded
+ * constant, so the page cannot drift out of sync with the NFL calendar.
+ */
+function CurrentWeekBids() {
+  const [wk, setWk] = useState(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    fetchCurrentWeek().then(setWk).catch(() => setFailed(true));
+  }, []);
+
+  if (failed) return <div style={{ padding: 40, textAlign: 'center' }}>Could not load the current week.</div>;
+  if (!wk) return <div style={{ padding: 40, textAlign: 'center' }}>Loading…</div>;
+  return <WeeklyBids season={wk.season} week={wk.week} />;
+}
+
+function BidsForWeek() {
+  const { season, wk } = useParams();
+  return <WeeklyBids season={season ? Number(season) : undefined} week={Number(wk)} />;
+}
 
 function App() {
   useEffect(() => {
@@ -25,13 +49,19 @@ function App() {
 
 const location = useLocation();
 const hideHeaderFooterRoutes = ['/toptargets', '/compact-dashboard'];
+// The redesigned bid page brings its own header and week strip. Matched by
+// prefix because it has sub-routes like /bids/2026/3.
+const hideChromePrefixes = ['/bids'];
+const hideChrome =
+  hideHeaderFooterRoutes.includes(location.pathname) ||
+  hideChromePrefixes.some((p) => location.pathname === p || location.pathname.startsWith(p + '/'));
 
 
 
 return (
   <div className="">
     {/* Only show Header if NOT on toptargets page */}
-    {!hideHeaderFooterRoutes.includes(location.pathname) && <Header currentWk={curWk} />}
+    {!hideChrome && <Header currentWk={curWk} />}
     
     <Routes>
       <Route exact path="/" element={<Home curWk={curWk} />} />
@@ -47,10 +77,14 @@ return (
       <Route path="/howitwork" element={<HowItWork />} />
       <Route path="/about" element={<About />} />
       <Route path="/faq" element={<FAQS />} />
+      {/* Redesigned weekly bid page. */}
+      <Route path="/bids" element={<CurrentWeekBids />} />
+      <Route path="/bids/:wk" element={<BidsForWeek />} />
+      <Route path="/bids/:season/:wk" element={<BidsForWeek />} />
     </Routes>
     
     {/* You might also want to hide Footer on toptargets */}
-  {!hideHeaderFooterRoutes.includes(location.pathname) && <Footer />}
+  {!hideChrome && <Footer />}
   </div>
 );
 }

@@ -15,13 +15,27 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
+        env:
+          # Create React App freezes REACT_APP_* variables into the bundle at
+          # build time, and the build happens here -- so this must be set on
+          # this step. Setting it in Azure's application settings has no effect
+          # on a static build. Without it the site calls `undefined/week` and
+          # renders empty, with nothing in the logs to point at.
+          #
+          # Not a secret: it ends up in a public JavaScript bundle either way.
+          # Point this at a staging API on a branch if you ever need one.
+          REACT_APP_API_URL: https://faablab.herokuapp.com/api/
+          # react-scripts treats warnings as errors when CI is true, which
+          # GitHub Actions sets by default. The repo has pre-existing warnings,
+          # so this keeps an unrelated lint warning from failing a deploy.
+          CI: false
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_PLANT_0DC8D0C0F }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
