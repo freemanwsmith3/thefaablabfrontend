@@ -183,12 +183,12 @@ export default function WeeklyBids({ season, week }) {
             <React.Fragment key={p.id}>
               {i === 6 && (
                 <Coffee
-                  href="https://buymeacoffee.com/faablab"
+                  href="https://ko-fi.com/faablab"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span aria-hidden="true">☕</span>
-                  FAABLab is free — buy me a coffee if it helped
+                  FAABLab is free — support it on Ko-fi if it helped
                 </Coffee>
               )}
               <PlayerCard
