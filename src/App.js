@@ -48,7 +48,7 @@ function App() {
   const [curWk, setCurWk] = useState(54);
 
 const location = useLocation();
-const hideHeaderFooterRoutes = ['/toptargets', '/compact-dashboard'];
+const hideHeaderFooterRoutes = ['/', '/toptargets', '/compact-dashboard'];
 // The redesigned bid page brings its own header and week strip. Matched by
 // prefix because it has sub-routes like /bids/2026/3.
 const hideChromePrefixes = ['/bids'];
@@ -64,8 +64,10 @@ return (
     {!hideChrome && <Header currentWk={curWk} />}
     
     <Routes>
-      <Route exact path="/" element={<Home curWk={curWk} />} />
-      <Route exact path="/" element={<Auction />} />
+      {/* The redesigned bid page is the front door. */}
+      <Route exact path="/" element={<CurrentWeekBids />} />
+      {/* The previous home page, kept reachable rather than deleted. */}
+      <Route path="/classic" element={<Home curWk={curWk} />} />
       <Route path="/toptargets" element={<TopTargetsDashboard week={curWk} />} />  
       <Route path="/compact-dashboard" element={<CompactTopTargetsDashboard week={curWk} />} />
       <Route path="/auction" element={<Auction />} />
