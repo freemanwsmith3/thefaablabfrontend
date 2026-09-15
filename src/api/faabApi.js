@@ -19,8 +19,14 @@ const BASE = process.env.REACT_APP_API_URL;
 // defeating the per-browser deduplication.
 const client = axios.create({ baseURL: BASE, withCredentials: true });
 
-/** Fewer leagues than this and the Sleeper figure is not worth showing. */
-export const SLEEPER_MIN_LEAGUES = 10;
+/**
+ * Fewer leagues than this and the figure is noise rather than a market.
+ *
+ * Low on purpose: the block shows the league count next to the number, so a
+ * reader can judge a thin sample themselves. Set higher only if you would
+ * rather show nothing than show a small one.
+ */
+export const SLEEPER_MIN_LEAGUES = 3;
 
 // Static NFL schedule, keyed by team abbreviation then week. Small enough
 // (~18KB) to ship with the bundle and it never changes mid-season, so it costs
