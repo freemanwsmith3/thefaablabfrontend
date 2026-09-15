@@ -183,7 +183,7 @@ export default function WeeklyBids({ season, week }) {
             <React.Fragment key={p.id}>
               {i === 6 && (
                 <Coffee
-                  href="https://buymeacoffee.com/faablab"
+                  href="https://ko-fi.com/faablab"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
