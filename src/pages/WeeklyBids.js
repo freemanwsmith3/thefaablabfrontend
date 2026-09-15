@@ -194,7 +194,6 @@ export default function WeeklyBids({ season, week }) {
               <PlayerCard
                 player={p}
                 budget={league.budget}
-                teams={league.teams}
                 value={draft[p.id] ?? initialBid(p)}
                 submittedPct={done[p.id]}
                 onChange={(v) => setDraft((d) => ({ ...d, [p.id]: v }))}
