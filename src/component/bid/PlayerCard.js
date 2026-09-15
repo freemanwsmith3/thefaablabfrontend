@@ -29,16 +29,6 @@ const Meta = styled.span`
   letter-spacing: 0.02em;
   color: ${color.brand};
 `;
-// Sleeper's own demand signal, shown before anyone here has bid -- it is the
-// only number on a fresh card, so it earns its place rather than duplicating
-// the crowd data further down.
-const Demand = styled.span`
-  font-size: 12px;
-  font-weight: 600;
-  color: ${color.label};
-  text-align: center;
-`;
-
 // Lighter and smaller than the identity line above it, so the player's own
 // team reads as part of who they are and the fixture reads as context.
 const Matchup = styled.span`
@@ -166,9 +156,6 @@ export default function PlayerCard({ player, budget, teams, value, onChange, onS
           <Name>{player.name}</Name>
           <Meta>{player.identity || player.meta}</Meta>
           {player.matchup ? <Matchup>{player.matchup}</Matchup> : null}
-          {player.sleeperAdds ? (
-            <Demand>{formatCount(player.sleeperAdds)} adds on Sleeper</Demand>
-          ) : null}
         </div>
       </div>
 
@@ -227,6 +214,20 @@ export default function PlayerCard({ player, budget, teams, value, onChange, onS
               <Distribution player={player} budget={budget} />
             </>
           )}
+
+          {player.sleeperAdds ? (
+            <SleeperBox>
+              <div style={{ display: 'grid', gap: 3 }}>
+                <Eyebrow>ADDED ON SLEEPER</Eyebrow>
+                <span style={{ fontSize: 12, fontWeight: 500, color: color.textMuted }}>
+                  recent adds across Sleeper leagues
+                </span>
+              </div>
+              <span style={{ flex: 'none', fontSize: 22, fontWeight: 700, lineHeight: 1, color: color.safe }}>
+                {formatCount(player.sleeperAdds)}
+              </span>
+            </SleeperBox>
+          ) : null}
 
           {player.sleeper && (
             <SleeperBox>
