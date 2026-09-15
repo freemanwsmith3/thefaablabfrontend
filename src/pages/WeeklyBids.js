@@ -48,6 +48,33 @@ const Sponsor = styled.div`
   padding: 20px;
   background-image: repeating-linear-gradient(45deg, #f6fafb 0 10px, #eef4f6 10px 20px);
 `;
+// Spans the grid so it reads as a divider between cards rather than another
+// card competing with them. Placed after the fifth player: far enough down
+// that someone is engaged, early enough to be seen without hunting.
+const Coffee = styled.a`
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  background: ${color.card};
+  border: 1px solid ${color.borderSoft};
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: ${color.textMuted};
+  text-decoration: none;
+  &:hover {
+    border-color: ${color.brand};
+    color: ${color.brand};
+  }
+  &:focus-visible {
+    outline: 2px solid ${color.brand};
+    outline-offset: 2px;
+  }
+`;
+
 const Empty = styled.p`
   max-width: 1180px;
   margin: 0 auto;
@@ -163,6 +190,16 @@ export default function WeeklyBids({ season, week }) {
         <Grid>
           {visible.map((p, i) => (
             <React.Fragment key={p.id}>
+              {i === 5 && (
+                <Coffee
+                  href="https://buymeacoffee.com/faablab"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span aria-hidden="true">☕</span>
+                  FAABLab is free — buy me a coffee if it helped
+                </Coffee>
+              )}
               {i > 0 && i % 6 === 0 && (
                 <Sponsor>
                   <span style={{ fontFamily: 'ui-monospace, Menlo, monospace', fontSize: 12, color: color.label }}>
