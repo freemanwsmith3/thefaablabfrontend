@@ -29,6 +29,24 @@ const Meta = styled.span`
   letter-spacing: 0.02em;
   color: ${color.brand};
 `;
+// Sleeper's own demand signal, shown before anyone here has bid -- it is the
+// only number on a fresh card, so it earns its place rather than duplicating
+// the crowd data further down.
+const Demand = styled.span`
+  font-size: 12px;
+  font-weight: 600;
+  color: ${color.label};
+  text-align: center;
+`;
+
+// Lighter and smaller than the identity line above it, so the player's own
+// team reads as part of who they are and the fixture reads as context.
+const Matchup = styled.span`
+  font-size: 13px;
+  font-weight: 500;
+  color: ${color.textMuted};
+`;
+
 const Eyebrow = styled.span`
   font-size: 11px;
   font-weight: 700;
@@ -146,7 +164,11 @@ export default function PlayerCard({ player, budget, teams, value, onChange, onS
         </Frame>
         <div style={{ display: 'grid', gap: 2, textAlign: 'center' }}>
           <Name>{player.name}</Name>
-          <Meta>{player.meta}</Meta>
+          <Meta>{player.identity || player.meta}</Meta>
+          {player.matchup ? <Matchup>{player.matchup}</Matchup> : null}
+          {player.sleeperAdds ? (
+            <Demand>{formatCount(player.sleeperAdds)} adds on Sleeper</Demand>
+          ) : null}
         </div>
       </div>
 
