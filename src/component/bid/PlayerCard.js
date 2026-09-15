@@ -134,7 +134,7 @@ function Distribution({ player, budget }) {
   );
 }
 
-export default function PlayerCard({ player, budget, teams, value, onChange, onSubmit, submittedPct }) {
+export default function PlayerCard({ player, budget, value, onChange, onSubmit, submittedPct }) {
   const done = submittedPct != null;
   const win = winningBucketIndex(player.buckets, player.mode);
   const winBucket = win >= 0 ? player.buckets[win] : null;
@@ -185,13 +185,6 @@ export default function PlayerCard({ player, budget, teams, value, onChange, onS
 
       {done && (
         <div style={{ display: 'grid', gap: 14 }}>
-          {/* Deliberately small, not a banner. Edit is absent by decision: the
-              API records one bid per browser per week and a resubmit is a
-              no-op, so offering Edit would promise a change that never lands. */}
-          <span style={{ fontSize: 12, fontWeight: 600, color: color.confirm }}>
-            You bid {formatDollars(submittedPct, budget)} · {submittedPct}% of your ${budget} FAAB · {teams}-team
-          </span>
-
           {!player.hasData ? (
             <div style={{ background: color.tint, border: `1px solid ${color.tintBorder}`, borderRadius: radius.control, padding: 12, fontSize: 13, fontWeight: 600, color: color.label }}>
               You're the first bid on this player.
