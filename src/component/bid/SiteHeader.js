@@ -1,14 +1,18 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 import { color, shadow, TOUCH_MIN, NAV_BREAKPOINT } from '../../design/tokens';
 // The SVG is the wordmark at its true aspect ratio; logo.png is a 1:1
 // square with the mark small inside it, which renders as a tiny box at 56px.
 import logo from '../../assets/svg/logo.svg';
 
+// Routes that exist in App.js. The previous version pointed at #anchors that
+// went nowhere, so the menu opened and did nothing.
 const LINKS = [
-  { href: '#rankings', label: 'RANKINGS' },
-  { href: '#previous', label: 'PREVIOUS WEEKS' },
-  { href: '#about', label: 'ABOUT' },
+  { to: '/thisyear', label: 'PREVIOUS WEEKS' },
+  { to: '/history', label: 'LAST SEASON' },
+  { to: '/rankings', label: 'RANKINGS' },
+  { to: '/about', label: 'ABOUT' },
 ];
 
 // Deliberately not sticky: mobile viewport height is scarce and the filter bar
@@ -29,7 +33,7 @@ const Inner = styled.div`
   flex-wrap: wrap;
   gap: 8px 16px;
 `;
-const NavLink = styled.a`
+const NavLink = styled(Link)`
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -60,7 +64,7 @@ const StackedNav = styled.nav`
   display: grid;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 `;
-const StackedLink = styled.a`
+const StackedLink = styled(Link)`
   color: #fff;
   font-size: 15px;
   font-weight: 600;
@@ -104,7 +108,7 @@ export default function SiteHeader({ week, closesAt, narrow, menuOpen, onToggleM
         {!narrow && (
           <nav style={{ display: 'flex', alignItems: 'center', gap: 20, marginLeft: 'auto' }}>
             {LINKS.map((l) => (
-              <NavLink key={l.href} href={l.href}>{l.label}</NavLink>
+              <NavLink key={l.to} to={l.to}>{l.label}</NavLink>
             ))}
           </nav>
         )}
@@ -117,7 +121,9 @@ export default function SiteHeader({ week, closesAt, narrow, menuOpen, onToggleM
       {narrow && menuOpen && (
         <StackedNav>
           {LINKS.map((l) => (
-            <StackedLink key={l.href} href={l.href} onClick={onToggleMenu}>{l.label}</StackedLink>
+            <StackedLink key={l.to} to={l.to} onClick={onToggleMenu}>
+              {l.label}
+            </StackedLink>
           ))}
         </StackedNav>
       )}

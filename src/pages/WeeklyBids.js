@@ -38,19 +38,10 @@ const Grid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   align-items: start;
 `;
-const Sponsor = styled.div`
-  background: #fff;
-  border: 2px dashed ${color.border};
-  border-radius: 8px;
-  min-height: 220px;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background-image: repeating-linear-gradient(45deg, #f6fafb 0 10px, #eef4f6 10px 20px);
-`;
 // Spans the grid so it reads as a divider between cards rather than another
-// card competing with them. Placed after the fifth player: far enough down
-// that someone is engaged, early enough to be seen without hunting.
+// card competing with them. Placed after the sixth player so it falls on a row
+// boundary on desktop -- two full rows of three above it -- and still lands
+// early enough on mobile to be seen without hunting.
 const Coffee = styled.a`
   grid-column: 1 / -1;
   display: flex;
@@ -190,7 +181,7 @@ export default function WeeklyBids({ season, week }) {
         <Grid>
           {visible.map((p, i) => (
             <React.Fragment key={p.id}>
-              {i === 5 && (
+              {i === 6 && (
                 <Coffee
                   href="https://buymeacoffee.com/faablab"
                   target="_blank"
@@ -199,13 +190,6 @@ export default function WeeklyBids({ season, week }) {
                   <span aria-hidden="true">☕</span>
                   FAABLab is free — buy me a coffee if it helped
                 </Coffee>
-              )}
-              {i > 0 && i % 6 === 0 && (
-                <Sponsor>
-                  <span style={{ fontFamily: 'ui-monospace, Menlo, monospace', fontSize: 12, color: color.label }}>
-                    sponsor slot · 300×250
-                  </span>
-                </Sponsor>
               )}
               <PlayerCard
                 player={p}

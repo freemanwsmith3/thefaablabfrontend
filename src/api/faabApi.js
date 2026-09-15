@@ -51,11 +51,21 @@ export function getSleeperAverage(market) {
   return { pct: market.mean, leagues: market.n_leagues };
 }
 
-/** Meta line: "RB - TEN vs GB in Week 3", or "RB - TEN · Week 3" with no opponent. */
+/**
+ * Split into two lines rather than one string.
+ *
+ * "TE - LV at LAC in Week 2" runs the player's own team and their opponent
+ * together, so it is not clear which is which. Keeping identity and matchup
+ * visually apart makes the team unambiguous.
+ *
+ * Returns { identity: "TE - LV", matchup: "at LAC · Week 2" }.
+ */
 export function buildMeta(position, abbr, opponent, week) {
-  const head = [position, abbr].filter(Boolean).join(' - ');
-  if (!opponent) return `${head} · Week ${week}`;
-  return `${head} ${opponent.isHome ? 'vs' : 'at'} ${opponent.abbr} in Week ${week}`;
+  const identity = [position, abbr].filter(Boolean).join(' - ');
+  const matchup = opponent
+    ? `${opponent.isHome ? 'vs' : 'at'} ${opponent.abbr} · Week ${week}`
+    : `Week ${week}`;
+  return { identity, matchup };
 }
 
 /**
@@ -81,7 +91,12 @@ export function toViewModel(p, week, season) {
     position: p.position || null,
     image: p.image || null,
     targetId: p.target_id,
-    meta: buildMeta(p.position, p.team, opponent, week),
+    sleeperAdds: p.sleeper_adds ?? null,
+    ...(() => {
+      const m = buildMeta(p.position, p.team, opponent, week);
+      // `meta` stays a single string for anything still reading it.
+      return { meta: `${m.identity} ${m.matchup}`, identity: m.identity, matchup: m.matchup };
+    })(),
 
     // Crowd figures, all percent.
     hasData: !!(crowd && crowd.n),

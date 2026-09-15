@@ -29,6 +29,14 @@ const Meta = styled.span`
   letter-spacing: 0.02em;
   color: ${color.brand};
 `;
+// Lighter and smaller than the identity line above it, so the player's own
+// team reads as part of who they are and the fixture reads as context.
+const Matchup = styled.span`
+  font-size: 13px;
+  font-weight: 500;
+  color: ${color.textMuted};
+`;
+
 const Eyebrow = styled.span`
   font-size: 11px;
   font-weight: 700;
@@ -146,7 +154,8 @@ export default function PlayerCard({ player, budget, teams, value, onChange, onS
         </Frame>
         <div style={{ display: 'grid', gap: 2, textAlign: 'center' }}>
           <Name>{player.name}</Name>
-          <Meta>{player.meta}</Meta>
+          <Meta>{player.identity || player.meta}</Meta>
+          {player.matchup ? <Matchup>{player.matchup}</Matchup> : null}
         </div>
       </div>
 
@@ -205,6 +214,20 @@ export default function PlayerCard({ player, budget, teams, value, onChange, onS
               <Distribution player={player} budget={budget} />
             </>
           )}
+
+          {player.sleeperAdds ? (
+            <SleeperBox>
+              <div style={{ display: 'grid', gap: 3 }}>
+                <Eyebrow>ADDED ON SLEEPER</Eyebrow>
+                <span style={{ fontSize: 12, fontWeight: 500, color: color.textMuted }}>
+                  recent adds across Sleeper leagues
+                </span>
+              </div>
+              <span style={{ flex: 'none', fontSize: 22, fontWeight: 700, lineHeight: 1, color: color.safe }}>
+                {formatCount(player.sleeperAdds)}
+              </span>
+            </SleeperBox>
+          ) : null}
 
           {player.sleeper && (
             <SleeperBox>
