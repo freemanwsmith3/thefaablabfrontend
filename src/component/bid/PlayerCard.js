@@ -48,6 +48,10 @@ const BidField = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
+  /* A grid item's automatic minimum is its min-content. Without this the
+     field cannot shrink below the input's intrinsic width and pushes the
+     whole card past its grid track. */
+  min-width: 0;
   min-height: ${TOUCH_MIN}px;
   padding: 4px 14px;
   background: #fff;
@@ -64,6 +68,7 @@ const Prefix = styled.span`
 const BidInput = styled.input`
   flex: 1;
   min-width: 0;
+  width: 100%;
   border: 0;
   outline: none;
   background: transparent;
@@ -182,6 +187,9 @@ export default function PlayerCard({ player, budget, value, onChange, onSubmit, 
               <BidInput
                 type="text"
                 inputMode="numeric"
+                // Defaults to 20 characters, which at this font size is an
+                // intrinsic width wide enough to blow out the card.
+                size={1}
                 value={value}
                 aria-label={`Bid on ${player.name}, in dollars of your $${budget} FAAB`}
                 // Digits only: strips pasted text and blocks the minus sign and
