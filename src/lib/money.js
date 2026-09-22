@@ -6,6 +6,20 @@
  * ever be persisted or sent to the API.
  */
 
+/**
+ * Convert whole dollars of budget into the percent that gets persisted.
+ *
+ * Returns null for anything that is not a usable bid -- empty, non-numeric, or
+ * more than the budget -- so callers can treat null as "not ready to submit"
+ * rather than having to repeat the validation.
+ */
+export function toPercent(dollars, budget) {
+  if (dollars === '' || dollars == null) return null;
+  const d = Number(dollars);
+  if (!Number.isFinite(d) || d < 0 || d > budget) return null;
+  return Math.round((d / budget) * 100);
+}
+
 /** Convert a percent of budget into whole dollars. */
 export function toDollars(pct, budget) {
   if (pct == null || Number.isNaN(Number(pct))) return null;

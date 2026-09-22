@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { color, radius, shadow } from '../../design/tokens';
-import { formatCount, formatDollars, formatRange, toDollars } from '../../lib/money';
+import { formatCount, formatDollars, formatRange, toDollars, toPercent } from '../../lib/money';
 import { barWidth, bucketColor, bucketShare, winningBucketIndex } from '../../lib/derive';
 
 const Card = styled.div`
@@ -43,29 +43,37 @@ const Eyebrow = styled.span`
   letter-spacing: 0.1em;
   color: ${color.label};
 `;
-const BigFigure = styled.span`font-size: 34px; font-weight: 700; color: ${color.brand}; line-height: 1;`;
 const Sub = styled.span`font-size: 11px; font-weight: 600; color: ${color.label};`;
-const Slider = styled.input`
+const BidField = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: ${TOUCH_MIN}px;
+  padding: 4px 14px;
+  background: #fff;
+  border: 2px solid ${(p) => (p.invalid ? color.winning : color.borderSoft)};
+  border-radius: ${radius.control};
+  &:focus-within { border-color: ${color.brand}; }
+`;
+const Prefix = styled.span`
+  font-size: 30px; font-weight: 700; line-height: 1; color: ${color.label};
+`;
+/* A plain text box, deliberately empty. An earlier build seeded a slider with
+   the crowd median, which let a bidder submit the crowd's own answer back as
+   their bid -- the one input that tells us nothing. Typing is the point. */
+const BidInput = styled.input`
   flex: 1;
-  /* The prototype draws this 30px tall, but the token table requires a 44px
-     minimum touch target. Growing the input satisfies both: the visible track
-     stays 6px and the thumb 26px, only the hit area grows. */
-  height: 44px;
-  -webkit-appearance: none;
-  appearance: none;
+  min-width: 0;
+  border: 0;
+  outline: none;
   background: transparent;
-  &::-webkit-slider-runnable-track { height: 6px; border-radius: ${radius.bar}; background: ${color.borderSoft}; }
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 26px; width: 26px; margin-top: -10px;
-    border-radius: 50%; background: ${color.brand};
-    border: 3px solid #fff; box-shadow: ${shadow.sliderThumb}; cursor: pointer;
-  }
-  &::-moz-range-track { height: 6px; border-radius: ${radius.bar}; background: ${color.borderSoft}; }
-  &::-moz-range-thumb {
-    height: 20px; width: 20px; border-radius: 50%;
-    background: ${color.brand}; border: 3px solid #fff; cursor: pointer;
-  }
+  font-family: inherit;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  color: ${color.brand};
+  padding: 6px 0;
+  &::placeholder { color: ${color.borderSoft}; font-weight: 600; }
 `;
 const Submit = styled.button`
   width: 100%;
@@ -80,6 +88,7 @@ const Submit = styled.button`
   border-radius: ${radius.control};
   cursor: pointer;
   &:hover { background: ${color.brandHover}; }
+  &:disabled { background: ${color.borderSoft}; cursor: not-allowed; }
 `;
 const Tile = styled.div`
   background: ${color.tint};
@@ -136,6 +145,9 @@ function Distribution({ player, budget }) {
 
 export default function PlayerCard({ player, budget, value, onChange, onSubmit, submittedPct }) {
   const done = submittedPct != null;
+  const pct = toPercent(value, budget);
+  // Distinguished from a merely empty box so the reason can be named.
+  const overBudget = value !== '' && Number(value) > budget;
   const win = winningBucketIndex(player.buckets, player.mode);
   const winBucket = win >= 0 ? player.buckets[win] : null;
 
@@ -164,22 +176,28 @@ export default function PlayerCard({ player, budget, value, onChange, onSubmit, 
           <div style={{ borderTop: `1px solid ${color.divider}`, paddingTop: 12 }}>
             <Eyebrow>YOUR BID</Eyebrow>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ minWidth: 92, display: 'grid', gap: 2 }}>
-              <BigFigure>{formatDollars(value, budget)}</BigFigure>
-              <Sub>{value}% of ${budget}</Sub>
-            </div>
-            <Slider
-              type="range"
-              min="0"
-              max="60"
-              step="1"
-              value={value}
-              aria-label={`Bid on ${player.name}, percent of FAAB`}
-              onChange={(e) => onChange(Number(e.target.value))}
-            />
+          <div style={{ display: 'grid', gap: 6 }}>
+            <BidField invalid={overBudget}>
+              <Prefix>$</Prefix>
+              <BidInput
+                type="text"
+                inputMode="numeric"
+                value={value}
+                aria-label={`Bid on ${player.name}, in dollars of your $${budget} FAAB`}
+                // Digits only: strips pasted text and blocks the minus sign and
+                // exponent notation that type="number" would otherwise accept.
+                onChange={(e) => onChange(e.target.value.replace(/[^0-9]/g, ''))}
+              />
+            </BidField>
+            <Sub>
+              {overBudget
+                ? `More than your $${budget} FAAB`
+                : pct == null
+                  ? `of your $${budget} FAAB`
+                  : `${pct}% of your $${budget} FAAB`}
+            </Sub>
           </div>
-          <Submit onClick={onSubmit}>SUBMIT BID</Submit>
+          <Submit onClick={onSubmit} disabled={pct == null}>SUBMIT BID</Submit>
         </div>
       )}
 

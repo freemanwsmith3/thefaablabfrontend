@@ -11,7 +11,7 @@ export const color = {
   tint: '#f2f7f9',         // stat tiles, bar tracks
   tintBorder: '#dceaee',
   border: '#b7d3dc',       // inactive pills, inputs
-  borderSoft: '#cfe0e6',   // photo frame, slider track
+  borderSoft: '#cfe0e6',   // photo frame, bid input border, disabled button
   divider: '#e3ecef',
   text: '#14343f',
   textMuted: '#4d707c',
@@ -49,7 +49,6 @@ export const shadow = {
   header: '0 2px 10px rgba(0,0,0,.18)',
   filterBar: '0 8px 12px -8px rgba(0,0,0,.18)',
   bottomBar: '0 -4px 16px rgba(0,0,0,.12)',
-  sliderThumb: '0 1px 4px rgba(0,0,0,.35)',
 };
 
 // Nothing interactive may be smaller than this.
