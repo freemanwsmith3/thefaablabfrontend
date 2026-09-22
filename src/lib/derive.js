@@ -45,9 +45,3 @@ export function bucketShare(bids, total) {
   if (!total) return 0;
   return Math.round((bids / total) * 100);
 }
-
-/** Where the slider starts: the community median, or a modest default. */
-export function initialBid(player) {
-  if (player.median != null) return Math.round(player.median);
-  return 5;
-}

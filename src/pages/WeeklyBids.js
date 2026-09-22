@@ -8,7 +8,7 @@ import BottomBar from '../component/bid/BottomBar';
 import { fetchWeek, postBid } from '../api/faabApi';
 import { useLeague } from '../hooks/useLeague';
 import { useBids } from '../hooks/useBids';
-import { initialBid } from '../lib/derive';
+import { toPercent } from '../lib/money';
 import { color, BOTTOM_BAR_CLEARANCE, NAV_BREAKPOINT } from '../design/tokens';
 
 const Page = styled.div`
@@ -132,7 +132,13 @@ export default function WeeklyBids({ season, week }) {
   }, [players, pos, query]);
 
   const submit = useCallback(
-    async (player, value) => {
+    async (player, dollars) => {
+      // The card collects dollars because that is how people think about FAAB,
+      // but percent is what the API stores. Convert once, here at the boundary,
+      // so the draft keeps exactly what was typed and never round-trips through
+      // a rounded percent back into the box.
+      const value = toPercent(dollars, league.budget);
+      if (value == null) return;
       // Recorded locally first: the results are the reward for bidding, and a
       // network hiccup should not hide them.
       recordBid(player.id, value);
@@ -142,7 +148,7 @@ export default function WeeklyBids({ season, week }) {
         /* the bid is already reflected locally; nothing to unwind */
       }
     },
-    [recordBid, season, week]
+    [recordBid, season, week, league.budget]
   );
 
   return (
@@ -194,10 +200,10 @@ export default function WeeklyBids({ season, week }) {
               <PlayerCard
                 player={p}
                 budget={league.budget}
-                value={draft[p.id] ?? initialBid(p)}
+                value={draft[p.id] ?? ''}
                 submittedPct={done[p.id]}
                 onChange={(v) => setDraft((d) => ({ ...d, [p.id]: v }))}
-                onSubmit={() => submit(p, draft[p.id] ?? initialBid(p))}
+                onSubmit={() => submit(p, draft[p.id])}
               />
             </React.Fragment>
           ))}
