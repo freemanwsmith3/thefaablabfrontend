@@ -13,6 +13,7 @@ import ThisYear from "./component/History/ThisYear"
 import TopTargetsDashboard from './pages/TopTargetsDashboard';
 import CompactTopTargetsDashboard from './pages/CompactTopTargetsDashboard'
 import WeeklyBids from './pages/WeeklyBids';
+import EmbedWeek from './pages/EmbedWeek';
 import { fetchCurrentWeek } from './api/faabApi';
 import { initGA, logPageView } from './analytics';
 import { useLocation, useParams } from 'react-router-dom'; 
@@ -48,7 +49,7 @@ function App() {
   const [curWk, setCurWk] = useState(54);
 
 const location = useLocation();
-const hideHeaderFooterRoutes = ['/', '/toptargets', '/compact-dashboard'];
+const hideHeaderFooterRoutes = ['/', '/toptargets', '/compact-dashboard', '/embed'];
 // The redesigned bid page brings its own header and week strip. Matched by
 // prefix because it has sub-routes like /bids/2026/3.
 const hideChromePrefixes = ['/bids'];
@@ -80,6 +81,8 @@ return (
       <Route path="/about" element={<About />} />
       <Route path="/faq" element={<FAQS />} />
       {/* Redesigned weekly bid page. */}
+      {/* Bare, read-only table for embedding in an article. */}
+      <Route path="/embed" element={<EmbedWeek />} />
       <Route path="/bids" element={<CurrentWeekBids />} />
       <Route path="/bids/:wk" element={<BidsForWeek />} />
       <Route path="/bids/:season/:wk" element={<BidsForWeek />} />
