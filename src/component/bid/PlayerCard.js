@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { color, radius, shadow } from '../../design/tokens';
+import { color, radius, TOUCH_MIN } from '../../design/tokens';
 import { formatCount, formatDollars, formatRange, toDollars, toPercent } from '../../lib/money';
 import { barWidth, bucketColor, bucketShare, winningBucketIndex } from '../../lib/derive';
 
